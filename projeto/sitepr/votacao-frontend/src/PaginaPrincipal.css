@@ -3,52 +3,19 @@
     height: 100vh;
     font-family: Arial, sans-serif;
   }
-
-  .home-icon {
-    font-size: 24px;
-    margin-bottom: 20px;
-    cursor: pointer;
-  }
-  
   
   .conteudo {
     flex: 1;
     padding: 20px;
     width: 85.5%;
     display: block;
-    float: rifg;
+    float: right;
     margin-left: 14.5%;
+    overflow-y: scroll;
   }
   
- .top-bar {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 60px;
-  margin-bottom: 20px;
-}
-
-.top-bar h1 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  font-weight: bold;
-  margin: 0;
-}
-
-  
-  .user-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .logout-btn {
-    border: 2px solid black;
-    background: white;
-    padding: 5px 10px;
-    cursor: pointer;
+  html {
+    overflow-y: scroll;
   }
   
   .calendario {

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
-<div>
-<Sidebar />
-</div>
+import Header from './Header';
+import './Mensagens.css';
 
 const groups = [
   'PT Faker',
@@ -35,73 +34,70 @@ function Mensagens() {
   };
 
   return (
-   
     <div>
-       <div>
+      <Header />
       <Sidebar />
-      </div>
-      <div className="conteudo" >
-      <h1 className="text-4xl font-bold text-center mb-4">GYM</h1>
-      <h2 className="text-xl text-center mb-6">Mensagens</h2>
 
-      {!selectedGroup ? (
-        <div >
-          <input
-            type="text"
-            placeholder="🔍 Pesquisar"
-            className="mb-4 w-full p-2 border rounded"
-            />
-          <ul className="space-y-2">
-            {groups.map((group, index) => (
-              <li
-              key={index}
-              onClick={() => setSelectedGroup(group)}
-              className="cursor-pointer hover:bg-gray-100 p-2 border-b"
-              >
-                {group}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <div>
-          <button
-            onClick={() => setSelectedGroup(null)}
-            className="mb-4 text-blue-500 hover:underline"
-            >
-            ← Voltar
-          </button>
-          <h2 className="text-2xl font-semibold mb-4">{selectedGroup}</h2>
-          <div className="border rounded p-4 h-64 overflow-y-auto bg-gray-50">
-            {messages
-              .filter(msg => msg.group === selectedGroup)
-              .map((msg, idx) => (
-                <div key={idx} className="mb-2">
-                  <strong>{msg.sender}:</strong> {msg.content}
-                </div>
-              ))}
-          </div>
-          <div className="mt-4 flex">
+      <div className="mensagens-container">
+        <h2 className="titulo-mensagens">Mensagens</h2>
+
+        {!selectedGroup ? (
+          <div>
             <input
               type="text"
-              placeholder="Escreva..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              className="flex-grow p-2 border rounded-l"
-              />
-            <button
-              onClick={handleSendMessage}
-              className="p-2 bg-blue-500 text-white rounded-r"
-              >
-              ➤
-            </button>
+              placeholder="🔍 Pesquisar"
+              className="pesquisa-input"
+            />
+            <ul className="lista-grupos">
+              {groups.map((group, index) => (
+                <li
+                  key={index}
+                  onClick={() => setSelectedGroup(group)}
+                  className="item-grupo"
+                >
+                  {group}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      )}
+        ) : (
+          <div>
+            <button
+              onClick={() => setSelectedGroup(null)}
+              className="voltar-btn"
+            >
+              ← Voltar
+            </button>
+            <h2 className="titulo-grupo">{selectedGroup}</h2>
+            <div className="chat-box">
+              {messages
+                .filter(msg => msg.group === selectedGroup)
+                .map((msg, idx) => (
+                  <div key={idx} className="mensagem">
+                    <strong>{msg.sender}:</strong> {msg.content}
+                  </div>
+                ))}
+            </div>
+            <div className="input-mensagem-container">
+              <input
+                type="text"
+                placeholder="Escreva..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="input-mensagem"
+              />
+              <button
+                onClick={handleSendMessage}
+                className="enviar-btn"
+              >
+                ➤
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default Mensagens;
-

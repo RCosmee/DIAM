@@ -1,4 +1,5 @@
 import Sidebar from './Sidebar';
+import Header from './Header';
 import './Marcacoes.css';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -39,10 +40,10 @@ const Marcacoes = () => {
 
   return (
     <div>
+      <Header />
       <Sidebar />
       
       <div className="container">
-        <h1>GYM</h1>
         <p className="subtitulo">Marcações</p>
 
         <div className="filtros">
