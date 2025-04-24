@@ -1,0 +1,46 @@
+.sidebar {
+  width: 14%;
+  display:block;
+  float:left;
+  position:fixed;
+  height:100%;
+  background: #f7f7f7;
+  border-right: 1px solid #dae3e9;
+  padding-top: 2em;
+}
+
+.home-icon {
+  font-size: 24px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-left: 50px;
+}
+
+.sidebar nav a {
+  text-decoration: underline;
+  color: black;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.sidebar nav a.active {
+  position: relative;
+  color: black; /* Texto sem cor de destaque */
+  text-decoration: none; /* Caso não queiras sublinhado */
+}
+
+.sidebar nav a.active::before {
+  content: "➜"; /* Seta */
+  position: absolute;
+  left: -25px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #007bff; /* Cor da seta */
+}

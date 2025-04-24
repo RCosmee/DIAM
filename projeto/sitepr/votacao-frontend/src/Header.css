@@ -1,0 +1,37 @@
+.top-bar {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 60px;
+    margin-bottom: 20px;
+    background-color: #333;
+    color: white;
+    padding: 0 20px;
+  }
+  
+  .top-bar h1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    margin: 0;
+    color: white;
+  }
+  
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-btn {
+    background: #f00;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+  

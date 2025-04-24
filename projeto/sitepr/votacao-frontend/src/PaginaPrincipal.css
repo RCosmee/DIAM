@@ -1,0 +1,103 @@
+.pagina-principal {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+  }
+
+  .home-icon {
+    font-size: 24px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  
+  .conteudo {
+    flex: 1;
+    padding: 20px;
+    width: 85.5%;
+    display: block;
+    float: rifg;
+    margin-left: 14.5%;
+  }
+  
+ .top-bar {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 60px;
+  margin-bottom: 20px;
+}
+
+.top-bar h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: bold;
+  margin: 0;
+}
+
+  
+  .user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-btn {
+    border: 2px solid black;
+    background: white;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .calendario {
+    margin-top: 20px;
+  }
+  
+  .mes-nav {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    font-weight: bold;
+    background-color: #ddd;
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .dia-semana {
+    text-align: center;
+  }
+  
+  .dias-mes {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border: 1px solid #ccc;
+  }
+  
+  .dia-mes {
+    min-height: 80px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    position: relative;
+  }
+  
+  .numero-dia {
+    font-weight: bold;
+  }
+  
+  .evento {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    background-color: #e0e0ff;
+    padding: 3px;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+  
