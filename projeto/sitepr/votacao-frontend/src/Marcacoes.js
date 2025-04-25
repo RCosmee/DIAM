@@ -44,7 +44,7 @@ const Marcacoes = () => {
       <Sidebar />
       
       <div className="container">
-        <p className="subtitulo">Marcações</p>
+        <h2 className="subtitulo">Marcações</h2>
 
         <div className="filtros">
           <label style={{ marginRight: '10px' }}>

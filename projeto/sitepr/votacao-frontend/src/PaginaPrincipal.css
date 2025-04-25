@@ -3,6 +3,13 @@
     height: 100vh;
     font-family: Arial, sans-serif;
   }
+
+  .subtitulo {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 24px;
+    font-weight: bold;
+  }  
   
   .conteudo {
     flex: 1;
@@ -11,7 +18,6 @@
     display: block;
     float: right;
     margin-left: 14.5%;
-    overflow-y: scroll;
   }
   
   html {
@@ -68,3 +74,44 @@
     border-radius: 4px;
   }
   
+  .mes-nav button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); /* Sombra suave */
+}
+
+.mes-nav button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px); /* Efeito de movimento para cima */
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4); /* Sombra mais intensa no hover */
+}
+
+.mes-nav button:active {
+  transform: translateY(0); /* Efeito de clique (pressionado) */
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.mes-nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.voltar-hoje {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-left: 10px;
+}
