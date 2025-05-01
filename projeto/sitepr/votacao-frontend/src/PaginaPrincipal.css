@@ -4,11 +4,12 @@
   font-family: Arial, sans-serif;
 }
 
-.subtitulo {
+.subtituloPP {
   text-align: center;
   font-size: 28px;
   margin-bottom: 24px;
   font-weight: bold;
+  padding: 20px;
 }  
 
 .conteudo {

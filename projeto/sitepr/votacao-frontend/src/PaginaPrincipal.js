@@ -55,7 +55,7 @@ const PaginaPrincipal = () => {
   return (
     <div className="pagina-principal">
       <div className="conteudo">
-        <h1 className="subtitulo">Página Principal</h1>
+        <h1 className="subtituloPP">Página Principal</h1>
         <h2>O meu horário:</h2>
 
         <div className="calendario">
