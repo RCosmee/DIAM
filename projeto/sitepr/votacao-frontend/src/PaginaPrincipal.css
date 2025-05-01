@@ -1,118 +1,124 @@
 .pagina-principal {
-    margin-top: 20px;
-    display: flex;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-  }
+  display: flex;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
 
-  .subtitulo {
-    text-align: center;
-    font-size: 28px;
-    margin-bottom: 24px;
-    font-weight: bold;
-  }  
-  
-  .conteudo {
-    flex: 1;
-    padding: 20px;
-    width: 85.5%;
-    display: block;
-    float: right;
-    margin-left: 14.5%;
-  }
-  
-  html {
-    overflow-y: scroll;
-  }
-  
-  .calendario {
-    margin-top: 20px;
-  }
-  
-  .mes-nav {
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .dias-semana {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    font-weight: bold;
-    background-color: #ddd;
-    padding: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .dia-semana {
-    text-align: center;
-  }
-  
-  .dias-mes {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    border: 1px solid #ccc;
-  }
-  
-  .dia-mes {
-    min-height: 80px;
-    border: 1px solid #ccc;
-    padding: 5px;
-    position: relative;
-  }
-  
-  .numero-dia {
-    font-weight: bold;
-  }
-  
-  .evento {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    background-color: #e0e0ff;
-    padding: 3px;
-    font-size: 12px;
-    border-radius: 4px;
-  }
-  
-  .mes-nav button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
+.subtitulo {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 24px;
   font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); /* Sombra suave */
+}  
+
+.conteudo {
+  flex: 1;
+  padding: 20px;
+  width: 85.5%;
+  display: block;
+  float: right;
+  margin-left: 14.5%;
 }
 
-.mes-nav button:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px); /* Efeito de movimento para cima */
-  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4); /* Sombra mais intensa no hover */
+html {
+  overflow-y: scroll;
 }
 
-.mes-nav button:active {
-  transform: translateY(0); /* Efeito de clique (pressionado) */
-  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+.calendario {
+  margin-top: 20px;
 }
 
 .mes-nav {
-  display: flex;
-  gap: 20px;
-  align-items: center;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
-.voltar-hoje {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  font-size: 14px;
-  cursor: pointer;
+.dias-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: bold;
+  background-color: #ddd;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+.dia-semana {
+  text-align: center;
+}
+
+.dias-mes {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border: 1px solid #ccc;
+}
+
+.dia-mes {
+  min-height: 80px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  position: relative;
+}
+
+.numero-dia {
+  font-weight: bold;
+}
+
+.hoje {
+  border: 2px solid #007bff;
+  background-color: #e6f0ff;
+  border-radius: 8px;
+}
+
+
+.evento {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  background-color: #e0e0ff;
+  padding: 3px;
+  font-size: 12px;
   border-radius: 4px;
-  margin-left: 10px;
+}
+
+.mes-nav button {
+background-color: #007bff;
+color: white;
+border: none;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.3s ease;
+box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3); /* Sombra suave */
+}
+
+.mes-nav button:hover {
+background-color: #0056b3;
+transform: translateY(-2px); /* Efeito de movimento para cima */
+box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4); /* Sombra mais intensa no hover */
+}
+
+.mes-nav button:active {
+transform: translateY(0); /* Efeito de clique (pressionado) */
+box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+.mes-nav {
+display: flex;
+gap: 20px;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.voltar-hoje {
+background-color: #007bff;
+color: white;
+border: none;
+padding: 5px 10px;
+font-size: 14px;
+cursor: pointer;
+border-radius: 4px;
+margin-left: 10px;
 }

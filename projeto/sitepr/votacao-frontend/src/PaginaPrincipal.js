@@ -37,7 +37,8 @@ const PaginaPrincipal = () => {
   // Função para formatar o mês (ex: "Abril 2025")
   const formatarMesAno = () => {
     const meses = [
-      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+      'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+      'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
     const mes = meses[dataAtual.getMonth()];
     const ano = dataAtual.getFullYear();
@@ -54,15 +55,15 @@ const PaginaPrincipal = () => {
   return (
     <div className="pagina-principal">
       <div className="conteudo">
-       <h1 className="subtitulo">Página Principal</h1>
+        <h1 className="subtitulo">Página Principal</h1>
         <h2>O meu horário:</h2>
 
         <div className="calendario">
           <div className="mes-nav">
-            <button onClick={() => mudarMes(-1)}>&lt;</button> {/* Botão para retroceder o mês */}
+            <button onClick={() => mudarMes(-1)}>&lt;</button>
             <span>{formatarMesAno()}</span>
-            <button onClick={() => mudarMes(1)}>&gt;</button> {/* Botão para avançar o mês */}
-            <button className="voltar-hoje" onClick={voltarAoMesAtual}>Hoje</button> {/* Botão para voltar ao mês de hoje */}
+            <button onClick={() => mudarMes(1)}>&gt;</button>
+            <button className="voltar-hoje" onClick={voltarAoMesAtual}>Hoje</button>
           </div>
 
           <div className="dias-semana">
@@ -72,23 +73,31 @@ const PaginaPrincipal = () => {
           </div>
 
           <div className="dias-mes">
-            {diasDoMes.map((dia, idx) => (
-              <div key={idx} className="dia-mes">
-                {dia ? (
-                  <>
-                    <div className="numero-dia">{dia.getDate()}</div>
-                    {/* Aqui você pode adicionar eventos específicos para o dia */}
-                    {dia.getDate() === 30 && (
-                      <div className="evento">
-                        Pilates <br /> 18h-20h
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="dia-mes vazio"></div> // Se for um dia vazio
-                )}
-              </div>
-            ))}
+            {diasDoMes.map((dia, idx) => {
+              const hoje = new Date();
+              const ehHoje =
+                dia &&
+                dia.getDate() === hoje.getDate() &&
+                dia.getMonth() === hoje.getMonth() &&
+                dia.getFullYear() === hoje.getFullYear();
+
+              return (
+                <div key={idx} className={`dia-mes ${ehHoje ? 'hoje' : ''}`}>
+                  {dia ? (
+                    <>
+                      <div className="numero-dia">{dia.getDate()}</div>
+                      {dia.getDate() === 30 && (
+                        <div className="evento">
+                          Pilates <br /> 18h-20h
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="dia-mes vazio"></div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
