@@ -10,14 +10,14 @@
 }
 
 .nav-links {
-  display: inline-block; /* Links ocupam apenas o espaço necessário */
+  display: block; /* Links ocupam apenas o espaço necessário */
   margin-left: 50px;
   margin-top: 70px; /* se precisares de afastar dos itens do header */
   font-size: 22px;
 }
 
 .sidebar nav a {
-  display: inline-block; /* Links ocupam apenas o espaço necessário */
+  display: block; /* Links ocupam apenas o espaço necessário */
   text-decoration: underline;
   color: black;
   font-weight: bold;
