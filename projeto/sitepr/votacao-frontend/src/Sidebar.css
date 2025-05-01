@@ -17,7 +17,7 @@
 }
 
 .sidebar nav a {
-  display: block; /* Links ocupam apenas o espaço necessário */
+  display: inline-block; /* Links ocupam apenas o espaço necessário */
   text-decoration: underline;
   color: black;
   font-weight: bold;
