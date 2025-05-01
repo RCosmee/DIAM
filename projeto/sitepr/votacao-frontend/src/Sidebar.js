@@ -11,12 +11,15 @@ const Sidebar = () => {
         <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
           🏠 Página Principal
         </Link>
+        <br/>
         <Link to="/Marcacoes" className={location.pathname === '/Marcacoes' ? 'active' : ''}>
           Marcações
         </Link>
+        <br/>
         <Link to="/Mensagens" className={location.pathname === '/Mensagens' ? 'active' : ''}>
           Mensagens
         </Link>
+        <br/>
       </nav>
     </div>
   );
