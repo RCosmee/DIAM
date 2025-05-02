@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
+import eyeIcon from './imagens/eye.png';
+import eyeOffIcon from './imagens/eye-off.png';
 
 const CriarConta = () => {
   const [utilizador, setUtilizador] = useState('');
@@ -8,6 +10,7 @@ const CriarConta = () => {
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
   const navigate = useNavigate();
 
   const validarEmail = (email) => {
@@ -63,29 +66,29 @@ const CriarConta = () => {
             onChange={(e) => setSenha(e.target.value)}
             placeholder="Senha"
           />
-          <span
-            className="toggle-password"
+          <img
+            src={mostrarSenha ? eyeIcon : eyeOffIcon}
+            alt="Mostrar senha"
+            className="icon-eye"
             onClick={() => setMostrarSenha(!mostrarSenha)}
-          >
-            👁️
-          </span>
+          />
         </div>
 
         <label>Confirmar senha</label>
         <div className="input-group">
           <span className="icon">🔒</span>
           <input
-            type={mostrarSenha ? 'text' : 'password'}
+            type={mostrarConfirmar ? 'text' : 'password'}
             value={confirmarSenha}
             onChange={(e) => setConfirmarSenha(e.target.value)}
             placeholder="Confirmar senha"
           />
-          <span
-            className="toggle-password"
-            onClick={() => setMostrarSenha(!mostrarSenha)}
-          >
-            👁️
-          </span>
+          <img
+            src={mostrarConfirmar ? eyeIcon : eyeOffIcon}
+            alt="Mostrar senha"
+            className="icon-eye"
+            onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
+          />
         </div>
 
         <button type="submit">Criar Conta</button>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
+import eyeIcon from './imagens/eye.png';
+import eyeOffIcon from './imagens/eye-off.png';
 
 const Login = () => {
   const [utilizador, setUtilizador] = useState('');
@@ -42,12 +44,12 @@ const Login = () => {
             onChange={(e) => setSenha(e.target.value)}
             placeholder="Senha"
           />
-          <span
-            className="toggle-password"
+          <img
+            src={mostrarSenha ? eyeIcon : eyeOffIcon}
+            alt="Mostrar senha"
+            className="icon-eye"
             onClick={() => setMostrarSenha(!mostrarSenha)}
-          >
-            👁️
-          </span>
+          />
         </div>
 
         <div className="esqueceu-senha">

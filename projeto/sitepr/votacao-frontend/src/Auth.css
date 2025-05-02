@@ -1,74 +1,92 @@
-.auth-container {
-  border: 2px solid black;
-  max-width: 500px;
-  margin: 2rem auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-h1 {
-  font-size: 1.7rem;
-}
-
-h2 {
-  margin-bottom: 1.5rem;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1rem;
-}
-
-label {
-  text-align: left;
-  font-weight: bold;
-}
-
-.input-group {
-  display: flex;
-  align-items: center;
-  border: 2px solid black;
-  padding: 0.3rem 0.5rem;
-  background-color: white;
-}
-
-.input-group input {
-  border: none;
-  outline: none;
-  flex: 1;
-  padding: 0.5rem;
-}
-
-.icon {
-  margin-right: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.toggle-password {
-  cursor: pointer;
-  margin-left: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-button {
-  border: 2px solid black;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  font-weight: bold;
-  background-color: white;
-}
-
-.esqueceu-senha,
-.criar-conta-link {
-  margin-top: 0.5rem;
-}
-
-.criar-conta-link a,
-.esqueceu-senha a {
-  color: black;
-  font-weight: bold;
-  text-decoration: underline;
-  cursor: pointer;
-}
+body {
+    background-color: #f0f0f0; /* tom de cinza para o fundo geral */
+    margin: 0;
+    font-family: sans-serif;
+  }
+  
+  .auth-container {
+    border: 2px solid black;
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    text-align: center;
+    background-color: #e6e6e6; /* fundo da caixa do formulário num tom de cinza */
+    border-radius: 8px;
+  }
+  
+  h1 {
+    font-size: 1.7rem;
+  }
+  
+  h2 {
+    margin-bottom: 1.5rem;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  label {
+    text-align: left;
+    font-weight: bold;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    padding: 0.3rem 0.5rem;
+    background-color: white; /* fundo branco apenas nesta área */
+    border-radius: 4px;
+  }
+  
+  .input-group input {
+    border: none;
+    outline: none;
+    flex: 1;
+    padding: 0.5rem;
+    background-color: white; /* garante que o input continua branco */
+  }
+  
+  .icon {
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .icon-eye {
+    margin-top: 0.5rem;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    margin-left: 8px;
+  }
+  
+  button {
+    border: 2px solid black;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #d9d9d9; /* botão com fundo cinza */
+    border-radius: 4px;
+  }
+  
+  button:hover {
+    background-color: #c0c0c0; /* botão mais escuro ao passar o rato */
+  }
+  
+  .esqueceu-senha,
+  .criar-conta-link {
+    margin-top: 0.5rem;
+  }
+  
+  .criar-conta-link a,
+  .esqueceu-senha a {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
