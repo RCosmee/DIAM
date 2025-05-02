@@ -8,7 +8,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <nav className="nav-links">
-        <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+        <Link to="/PaginaPrincipal" className={location.pathname === '/PaginaPrincipal' ? 'active' : ''}>
           🏠 Página Principal
         </Link>
         <br/>

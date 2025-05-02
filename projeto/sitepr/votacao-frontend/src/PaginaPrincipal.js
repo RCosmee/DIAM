@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './PaginaPrincipal.css';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 const PaginaPrincipal = () => {
   const [dataAtual, setDataAtual] = useState(new Date());
@@ -53,6 +55,9 @@ const PaginaPrincipal = () => {
   const diasDoMes = gerarDiasDoMes(dataAtual.getFullYear(), dataAtual.getMonth());
 
   return (
+    <div>
+      <Header />
+      <Sidebar />
     <div className="pagina-principal">
       <div className="conteudo">
         <h1 className="subtituloPP">Página Principal</h1>
@@ -76,11 +81,11 @@ const PaginaPrincipal = () => {
             {diasDoMes.map((dia, idx) => {
               const hoje = new Date();
               const ehHoje =
-                dia &&
-                dia.getDate() === hoje.getDate() &&
-                dia.getMonth() === hoje.getMonth() &&
-                dia.getFullYear() === hoje.getFullYear();
-
+              dia &&
+              dia.getDate() === hoje.getDate() &&
+              dia.getMonth() === hoje.getMonth() &&
+              dia.getFullYear() === hoje.getFullYear();
+              
               return (
                 <div key={idx} className={`dia-mes ${ehHoje ? 'hoje' : ''}`}>
                   {dia ? (
@@ -102,6 +107,7 @@ const PaginaPrincipal = () => {
         </div>
       </div>
     </div>
+</div>
   );
 };
 

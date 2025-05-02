@@ -1,16 +1,10 @@
 import React from 'react';
-import Sidebar from './Sidebar';
-import Header from './Header';
-import PaginaPrincipal from './PaginaPrincipal';
+import Login from './Login';
 
 function App() {
   return (
     <div>      
-        <Header />
-        <Sidebar />
-      <div >
-        <PaginaPrincipal />
-      </div>
+        <Login />
     </div>
     
   );
