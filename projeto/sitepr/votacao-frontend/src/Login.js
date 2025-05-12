@@ -5,17 +5,40 @@ import eyeIcon from './imagens/eye.png';
 import eyeOffIcon from './imagens/eye-off.png';
 
 const Login = () => {
-  const [utilizador, setUtilizador] = useState('');
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (utilizador.trim() && senha.trim()) {
-      navigate('/paginaPrincipal');
-    } else {
+
+    if (!email.trim() || !senha.trim()) {
       alert('Preencha todos os campos!');
+      return;
+    }
+
+    // Enviar dados para a API de login no Django
+    const response = await fetch('http://localhost:8000/api/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: senha,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // Login bem-sucedido
+      alert(data.message); // Mostrar mensagem de sucesso
+      navigate('/paginaPrincipal'); // Redirecionar para a página principal
+    } else {
+      // Erro no login
+      alert(data.error); // Mostrar mensagem de erro
     }
   };
 
@@ -24,14 +47,14 @@ const Login = () => {
       <h1>GYM</h1>
       <h2>Iniciar Sessão</h2>
       <form onSubmit={handleLogin}>
-        <label>Nome de utilizador</label>
+        <label>E-mail</label>
         <div className="input-group">
-          <span className="icon">👤</span>
+          <span className="icon">✉️</span>
           <input
-            type="text"
-            value={utilizador}
-            onChange={(e) => setUtilizador(e.target.value)}
-            placeholder="Nome de utilizador"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="E-mail"
           />
         </div>
 

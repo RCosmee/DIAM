@@ -11,14 +11,16 @@ const CriarConta = () => {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
+  const [tipoConta, setTipoConta] = useState('atleta'); // "atleta" ou "pt"
   const navigate = useNavigate();
 
   const validarEmail = (email) => {
     return /\S+@\S+\.\S+/.test(email);
   };
 
-  const handleCriarConta = (e) => {
+  const handleCriarConta = async (e) => {
     e.preventDefault();
+
     if (!utilizador || !email || !senha || !confirmarSenha) {
       alert('Todos os campos são obrigatórios!');
     } else if (!validarEmail(email)) {
@@ -26,7 +28,28 @@ const CriarConta = () => {
     } else if (senha !== confirmarSenha) {
       alert('As palavras-passe não coincidem!');
     } else {
-      navigate('/');
+      // Enviar dados para a API do Django
+      const response = await fetch('http://localhost:8000/api/signup/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: utilizador,
+          email: email,
+          password: senha,
+          tipo_conta: tipoConta, // Passar o tipo de conta (atleta ou pt)
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);
+        navigate('/'); // Redirecionar para a página inicial após sucesso
+      } else {
+        alert(data.error); // Exibir erro se houver
+      }
     }
   };
 
@@ -89,6 +112,17 @@ const CriarConta = () => {
             className="icon-eye"
             onClick={() => setMostrarConfirmar(!mostrarConfirmar)}
           />
+        </div>
+
+        <label>Tipo de Conta</label>
+        <div className="input-group">
+          <select
+            value={tipoConta}
+            onChange={(e) => setTipoConta(e.target.value)}
+          >
+            <option value="atleta">Atleta</option>
+            <option value="pt">Personal Trainer</option>
+          </select>
         </div>
 
         <button type="submit">Criar Conta</button>
