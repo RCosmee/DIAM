@@ -1,4 +1,5 @@
 from django.db import models
+<<<<<<< Updated upstream
 
 
 STATUS_CHOICES = [
@@ -36,4 +37,18 @@ class Message(models.Model):
 
     def __str__(self):
         return f'{self.sender}: {self.content[:20]}'
+>>>>>>> Stashed changes
+=======
+
+class Group(models.Model):
+    STATUS_CHOICES = [
+        ("A", "Ativo"),
+        ("I", "Inativo"),
+    ]
+
+    nome = models.CharField(max_length=100)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default="A")
+
+    def __str__(self):
+        return self.nome
 >>>>>>> Stashed changes
