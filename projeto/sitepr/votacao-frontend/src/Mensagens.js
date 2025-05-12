@@ -1,34 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import './Mensagens.css';
 
-const groups = [
-  { name: 'PT Faker', avatar: "/imagens/faker.jpeg", status: 'online' },
-  { name: 'Nutricionista Joana', avatar: "/imagens/kanyewest.png", status: 'offline' },
-  { name: 'Pilates', avatar: "/imagens/jbieber.jpeg", status: 'online' },
-  { name: 'Natação', avatar: "/imagens/acdc.jpeg", status: 'offline' },
-];
-
-const initialMessages = [
-  { group: 'PT Faker', sender: 'PT Faker', content: 'Muito bem-vindo!' },
-  { group: 'PT Faker', sender: 'Você', content: 'Obrigado!' },
-  { group: 'Nutricionista Joana', sender: 'Nutricionista', content: 'Olá a todos!' },
-  { group: 'Nutricionista Joana', sender: 'Você', content: 'Tudo bem?' }
-];
-
 export default function Mensagens() {
-  const [selectedGroup, setSelectedGroup] = useState(groups[0]);
-  const [messages, setMessages] = useState(initialMessages);
-  const [newMessage, setNewMessage] = useState("");
+  const [chats, setChats] = useState([]);             // Lista de chats vindos da API
+  const [selectedChat, setSelectedChat] = useState(null); // Chat selecionado
+  const [messages, setMessages] = useState([]);       // Mensagens do chat selecionado
+  const [newMessage, setNewMessage] = useState("");   // Nova mensagem
+  const [searchTerm, setSearchTerm] = useState("");   // Termo de pesquisa
+
+  const BASE_URL = 'http://127.0.0.1:8000/api';
+
+  // Buscar todos os chats ao carregar a página
+  useEffect(() => {
+    axios.get(`${BASE_URL}/chats/`)
+      .then(response => {
+        setChats(response.data);
+        if (response.data.length > 0) {
+          setSelectedChat(response.data[0]);  // Selecionar o primeiro chat por padrão
+        }
+      })
+      .catch(err => console.error("Erro ao carregar chats:", err));
+  }, []);
+
+  // Buscar mensagens do chat selecionado sempre que mudar o chat
+  useEffect(() => {
+    if (selectedChat) {
+      axios.get(`${BASE_URL}/messages/${selectedChat.pk}/`)
+        .then(response => {
+          setMessages(response.data);
+        })
+        .catch(err => console.error("Erro ao carregar mensagens:", err));
+    }
+  }, [selectedChat]);
+
+  // Filtrar os chats com base no termo de pesquisa
+  const filteredChats = chats.filter(chat => 
+    chat.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleSendMessage = () => {
-    if (!newMessage.trim()) return;
-    setMessages(prev => [
-      ...prev,
-      { group: selectedGroup.name, sender: "Você", content: newMessage }
-    ]);
-    setNewMessage("");
+    if (!newMessage.trim() || !selectedChat) return;
+
+    axios.post(`${BASE_URL}/messages/${selectedChat.pk}/`, {
+      sender: "Você",
+      content: newMessage,
+      chat: selectedChat.pk
+    })
+    .then(response => {
+      setMessages(prev => [...prev, response.data]);
+      setNewMessage("");
+    })
+    .catch(err => console.error("Erro ao enviar mensagem:", err));
   };
 
   return (
@@ -42,20 +67,25 @@ export default function Mensagens() {
             <h4>Conversas</h4>
           </div>
           <div className="contacts-search">
-            <input type="text" placeholder="Pesquisar..." />
+            <input
+              type="text"
+              placeholder="Pesquisar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)} // Atualiza o termo de pesquisa
+            />
           </div>
           <ul className="contacts-list-items">
-            {groups.map((group, idx) => (
+            {filteredChats.map((chat) => (
               <li
-                key={idx}
-                className={`contact-item ${selectedGroup.name === group.name ? 'active' : ''}`}
-                onClick={() => setSelectedGroup(group)}
+                key={chat.pk}
+                className={`contact-item ${selectedChat && selectedChat.pk === chat.pk ? 'active' : ''}`}
+                onClick={() => setSelectedChat(chat)}
               >
-                <img src={group.avatar} alt={group.name} className="contact-avatar" />
+                <img src={chat.avatar} alt={chat.name} className="contact-avatar" />
                 <div className="contact-info">
-                  <span className="contact-name">{group.name}</span>
+                  <span className="contact-name">{chat.name}</span>
                   <span className="contact-status">
-                    <i className={`fa fa-circle ${group.status}`}></i> {group.status}
+                    <i className={`fa fa-circle ${chat.status}`}></i> {chat.status}
                   </span>
                 </div>
               </li>
@@ -63,36 +93,53 @@ export default function Mensagens() {
           </ul>
         </div>
 
-        <div className="chat-area">
-          <div className="chat-header">
-            <img src={selectedGroup.avatar} alt={selectedGroup.name} className="chat-header-avatar" />
-            <div className="chat-header-info">
-              <h5 className="chat-header-name">{selectedGroup.name}</h5>
-              <span className="chat-header-status">Status: {selectedGroup.status}</span>
+        {selectedChat && (
+          <div className="chat-area">
+            <div className="chat-header">
+              <img src={selectedChat.avatar} alt={selectedChat.name} className="chat-header-avatar" />
+              <div className="chat-header-info">
+                <h5 className="chat-header-name">{selectedChat.name}</h5>
+                <span className="chat-header-status">Status: {selectedChat.status}</span>
+              </div>
             </div>
-          </div>
 
-          <div className="chat-history">
-            {messages
-              .filter(msg => msg.group === selectedGroup.name)
-              .map((msg, idx) => (
+            <div className="chat-history">
+              {messages.map((msg, idx) => (
                 <div key={idx} className={`chat-message ${msg.sender === "Você" ? "sent" : "received"}`}>
-                  <div className="chat-message-content">{msg.content}</div>
+                  <div className="chat-message-meta">
+                    {msg.sender !== "Você" && (
+                      <img
+                        src={selectedChat.avatar}
+                        alt={msg.sender}
+                        className="message-avatar"
+                      />
+                    )}
+                    <div className="message-info">
+                      <div className="message-header">
+                        <span className="message-sender">{msg.sender}</span>
+                        <span className="message-time">
+                          {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <div className="chat-message-content">{msg.content}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
-          </div>
+            </div>
 
-          <div className="chat-input">
-            <input
-              type="text"
-              placeholder="Digite sua mensagem..."
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
-            />
-            <button onClick={handleSendMessage}><i className="fa fa-paper-plane"></i></button>
+            <div className="chat-input">
+              <input
+                type="text"
+                placeholder="Digite sua mensagem..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleSendMessage(); }}
+              />
+              <button onClick={handleSendMessage}><i className="fa fa-paper-plane"></i></button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );

@@ -4,7 +4,8 @@ from django.db import models
 class Chat(models.Model):
     name = models.CharField(max_length=100, unique=True)
     avatar = models.URLField()
-    status = models.CharField(max_length=10, choices=[('online', 'Online'),('offline', 'Offline')])
+    status = models.CharField(max_length=10, choices=[('online', 'Online'), ('offline', 'Offline')])
+
 
     def __str__(self):
         return self.name
