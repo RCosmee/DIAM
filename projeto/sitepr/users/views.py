@@ -70,3 +70,22 @@ def reset_password(request):
         return Response({'message': 'Senha atualizada com sucesso!'})
     except User.DoesNotExist:
         return Response({'error': 'Utilizador não encontrado.'}, status=404)
+    
+    
+@api_view(['GET'])
+def user_data(request):
+    user = request.user
+    return Response({
+        'nome': user.username,
+        'imagem': user.profile.imagem.url if user.profile.imagem else None
+    })
+
+@api_view(['POST'])
+def update_user_profile(request):
+    user = request.user
+    if 'nome' in request.data:
+        user.username = request.data['nome']
+    if 'imagem' in request.FILES:
+        user.profile.imagem = request.FILES['imagem']
+    user.save()
+    return Response({'message': 'Perfil atualizado com sucesso!'})
