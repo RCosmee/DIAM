@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'aulas.apps.AulasConfig',
     'database.apps.DatabaseConfig',
     'votacao.apps.VotacaoConfig',
     'django.contrib.admin',
