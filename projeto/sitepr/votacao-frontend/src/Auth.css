@@ -69,14 +69,24 @@ body {
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-weight: bold;
-    background-color: #d9d9d9; /* botão com fundo cinza */
+  background-color: #a7a7a7; /* cinza claro para diferenciar */
     border-radius: 4px;
   }
   
   button:hover {
-    background-color: #c0c0c0; /* botão mais escuro ao passar o rato */
+    background-color: #888888; /* mais escuro ao passar o rato */
   }
   
+    button.back {
+  margin-top: 10px ;
+  background-color: #c9c9c9; /* botão com fundo cinza */
+  color: #000;
+}
+
+button.back:hover {
+  background-color: #b3b3b3; /* botão mais escuro ao passar o rato */
+}
+
   .esqueceu-senha,
   .criar-conta-link {
     margin-top: 0.5rem;

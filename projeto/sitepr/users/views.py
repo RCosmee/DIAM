@@ -53,3 +53,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return Response({'message': 'Logged out successfully'})
+
+@api_view(['POST'])
+def reset_password(request):
+    email = request.data.get('email')
+    nome = request.data.get('nome')
+    nova_senha = request.data.get('nova_senha')
+
+    if not email or not nome or not nova_senha:
+        return Response({'error': 'Todos os campos são obrigatórios.'}, status=400)
+
+    try:
+        user = User.objects.get(email=email, username=nome)
+        user.set_password(nova_senha)
+        user.save()
+        return Response({'message': 'Senha atualizada com sucesso!'})
+    except User.DoesNotExist:
+        return Response({'error': 'Utilizador não encontrado.'}, status=404)

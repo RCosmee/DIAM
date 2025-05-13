@@ -127,6 +127,13 @@ const CriarConta = () => {
 
         <button type="submit">Criar Conta</button>
       </form>
+     <button
+        type="button"
+        className="back"
+        onClick={() => navigate(-1)}
+      >
+        Voltar atrás
+      </button>
     </div>
   );
 };

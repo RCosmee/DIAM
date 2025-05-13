@@ -1,12 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    navigate('/'); 
+  const handleLogout = async () => {
+    try {
+      await axios.get('http://localhost:8000/api/logout/', { withCredentials: true }); // se usares cookies
+      navigate('/');
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error);
+      navigate('/'); // mesmo com erro, redireciona
+    }
   };
 
   return (

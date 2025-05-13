@@ -6,7 +6,7 @@ import Mensagens from './Mensagens';
 function App() {
   return (
     <div>      
-        <Mensagens/>
+        <Login/>
     </div>
     
   );

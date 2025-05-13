@@ -77,6 +77,7 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = (
+    'users.authentication.EmailBackend',  # substitui 'users' pelo nome da tua app se for diferente
     'django.contrib.auth.backends.ModelBackend',  # Este backend já permite autenticação com e-mail
 )
 
