@@ -24,6 +24,7 @@ const Login = () => {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // <-- esta linha é ESSENCIAL
       body: JSON.stringify({
         email: email,
         password: senha,

@@ -1,11 +1,18 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from rest_framework.decorators import api_view
+from .serializers import ProfileSerializer
+from rest_framework.decorators import api_view, permission_classes,  parser_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser
+from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Atleta, PersonalTrainer  # Adiciona isso se ainda não tiveres esses modelos
+
+
+
+from .models import Atleta, PersonalTrainer, Profile  # Adiciona isso se ainda não tiveres esses modelos
 
 @api_view(['POST'])
 def signup(request):
@@ -22,6 +29,7 @@ def signup(request):
     
     # Criar o usuário
     user = User.objects.create_user(username=username, email=email, password=password)
+    Profile.objects.create(user=user)
     
     # Criar o perfil baseado no tipo de conta
     if tipo_conta == 'atleta':
@@ -73,19 +81,36 @@ def reset_password(request):
     
     
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def user_data(request):
     user = request.user
     return Response({
-        'nome': user.username,
-        'imagem': user.profile.imagem.url if user.profile.imagem else None
+        'nome': user.get_full_name() or user.username,
+        'imagem': None  # mais tarde podes ir buscar isto de um perfil se quiseres
     })
 
-@api_view(['POST'])
-def update_user_profile(request):
-    user = request.user
-    if 'nome' in request.data:
-        user.username = request.data['nome']
-    if 'imagem' in request.FILES:
-        user.profile.imagem = request.FILES['imagem']
-    user.save()
-    return Response({'message': 'Perfil atualizado com sucesso!'})
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser])
+def profile_view(request):
+    if request.method == 'GET':
+        try:
+            profile = Profile.objects.get(user=request.user)
+        except ObjectDoesNotExist:
+            # se o profile ainda não existir, cria um vazio
+            profile = Profile.objects.create(user=request.user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+        
+    elif request.method == 'PUT':
+        try:
+            profile = Profile.objects.get(user=request.user)
+            serializer = ProfileSerializer(profile, data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=request.user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({'error': "Profile does not exist"}, status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_400_BAD_REQUEST)

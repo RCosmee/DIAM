@@ -1,64 +1,91 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import './Perfil.css';
 
 const Perfil = () => {
   const [nome, setNome] = useState('');
   const [imagem, setImagem] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const navigate = useNavigate();
 
-  // Carregar dados do utilizador ao carregar a página
+  const USER_URL = 'http://localhost:8000/api/user/';
+  const PROFILE_URL = 'http://localhost:8000/api/profile/';
+
+  // Obter CSRF token dos cookies
+  const getCSRFToken = () => {
+    return document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1];
+  };
+
+  // Carregar dados do utilizador
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/api/user/', { withCredentials: true });
-        setNome(response.data.nome);
-        setImagem(response.data.imagem); // Supondo que a imagem esteja no objeto de resposta
-      } catch (error) {
-        console.error('Erro ao carregar dados do utilizador:', error);
-      }
-    };
-    fetchUserData();
+    axios.get(USER_URL, { withCredentials: true })
+      .then(res => {
+        setNome(res.data.nome);
+        if (res.data.imagem) {
+          setPreviewUrl('http://localhost:8000' + res.data.imagem);
+        }
+      })
+      .catch(err => {
+        console.error('Erro ao carregar dados do utilizador:', err);
+      });
   }, []);
 
   const handleImageChange = (e) => {
-    setImagem(URL.createObjectURL(e.target.files[0])); // Atualiza a imagem localmente
+    const image = e.target.files[0];
+    if (image) {
+      setImagem(image);
+      setPreviewUrl(URL.createObjectURL(image));
+    } else {
+      setImagem(null);
+      setPreviewUrl('');
+    }
   };
 
-  const handleSave = async () => {
-    try {
-      const formData = new FormData();
-      formData.append('nome', nome);
-      if (imagem) formData.append('imagem', imagem); // Envia a nova imagem, se existir
+  const handleUpload = async (e) => {
+    e.preventDefault();
 
-      const response = await axios.post('http://localhost:8000/api/user/update/', formData, { withCredentials: true });
+    const formData = new FormData();
+    formData.append('nome', nome);
+    if (imagem) {
+      formData.append('imagem', imagem);
+    }
+
+    try {
+      await axios.put(PROFILE_URL, formData, {
+        headers: {
+          'X-CSRFToken': getCSRFToken(),
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
       alert('Perfil atualizado com sucesso!');
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
-      alert('Erro ao atualizar perfil');
+      alert('Erro ao atualizar perfil.');
     }
   };
 
   return (
     <div className="perfil-container">
       <h1>Meu Perfil</h1>
-      <div className="perfil-form">
-        <label>Nome</label>
-        <input
-          type="text"
-          value={nome}
-          onChange={(e) => setNome(e.target.value)}
-        />
 
-        <label>Imagem de Perfil</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-        />
-        {imagem && <img src={imagem} alt="Imagem de perfil" className="perfil-image" />}
+      <label>Nome</label>
+      <input
+        type="text"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
 
-        <button onClick={handleSave}>Salvar</button>
-      </div>
+      <label>Imagem de Perfil</label>
+      <input type="file" accept="image/*" onChange={handleImageChange} />
+      {previewUrl && <img src={previewUrl} alt="Preview" className="perfil-image" />}
+      <br></br>
+      <button onClick={handleUpload}>Guardar Alterações</button>
+      <button onClick={() => navigate(-1)}>Voltar</button>
     </div>
   );
 };
