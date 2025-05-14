@@ -23,7 +23,6 @@ class AulaSerializer(serializers.ModelSerializer):
             'max_participantes',
             'descricao'
         )
-
 class MarcacaoSerializer(serializers.ModelSerializer):
     atleta = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
