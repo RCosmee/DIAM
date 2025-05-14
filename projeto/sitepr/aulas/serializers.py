@@ -10,7 +10,7 @@ class ModalidadeSerializer(serializers.ModelSerializer):
 
 
 class AulaSerializer(serializers.ModelSerializer):
-    modalidade = ModalidadeSerializer(read_only=True)
+    modalidade = serializers.PrimaryKeyRelatedField(queryset=Modalidade.objects.all())
 
     class Meta:
         model = Aula
@@ -24,10 +24,9 @@ class AulaSerializer(serializers.ModelSerializer):
             'descricao'
         )
 
-
 class MarcacaoSerializer(serializers.ModelSerializer):
-    atleta = serializers.StringRelatedField(read_only=True)
-    aula = serializers.StringRelatedField(read_only=True)
+    atleta = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
 
     class Meta:
         model = Marcacao
@@ -39,10 +38,9 @@ class MarcacaoSerializer(serializers.ModelSerializer):
             'status'
         )
 
-
 class ComentarioSerializer(serializers.ModelSerializer):
-    autor = serializers.StringRelatedField(read_only=True)
-    aula = serializers.StringRelatedField(read_only=True)
+    autor = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
 
     class Meta:
         model = Comentario
@@ -54,10 +52,9 @@ class ComentarioSerializer(serializers.ModelSerializer):
             'criado_em'
         )
 
-
 class AvaliacaoSerializer(serializers.ModelSerializer):
-    atleta = serializers.StringRelatedField(read_only=True)
-    aula = serializers.StringRelatedField(read_only=True)
+    atleta = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
 
     class Meta:
         model = Avaliacao
