@@ -7,7 +7,10 @@ class Chat(models.Model):
     participants = models.ManyToManyField(User, related_name='chats')  # lista de usuários
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
@@ -25,7 +28,11 @@ class Message(models.Model):
     def __str__(self):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         return f'{self.sender.username}: {self.content[:20]}'
+=======
+        return f'{self.sender.username}: {self.content[:20]}'
+>>>>>>> Stashed changes
 =======
         return f'{self.sender.username}: {self.content[:20]}'
 >>>>>>> Stashed changes
