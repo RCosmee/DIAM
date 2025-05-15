@@ -17,7 +17,7 @@ class Aula(models.Model):
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
     max_participantes = models.PositiveIntegerField()
-    descricao = models.TextField()
+    
 
     def __str__(self):
         return f"{self.modalidade.nome} em {self.data} às {self.hora_inicio}"
