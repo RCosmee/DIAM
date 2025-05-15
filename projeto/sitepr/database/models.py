@@ -8,7 +8,10 @@ class Chat(models.Model):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 =======
@@ -29,7 +32,11 @@ class Message(models.Model):
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         return f'{self.sender.username}: {self.content[:20]}'
+=======
+        return f'{self.sender.username}: {self.content[:20]}'
+>>>>>>> Stashed changes
 =======
         return f'{self.sender.username}: {self.content[:20]}'
 >>>>>>> Stashed changes
