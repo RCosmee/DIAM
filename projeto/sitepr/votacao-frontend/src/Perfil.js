@@ -66,6 +66,7 @@ const Perfil = () => {
         withCredentials: true,
       });
       alert('Perfil atualizado com sucesso!');
+      navigate(0); // recarrega a pagina logo
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
       alert('Erro ao atualizar perfil.');

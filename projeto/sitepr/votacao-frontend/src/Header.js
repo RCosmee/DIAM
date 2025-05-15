@@ -47,9 +47,9 @@ const Header = () => {
     <div className="user-actions" onClick={handleProfile} style={{ cursor: 'pointer' }}>
       {imagemPerfil && (
         <img
+          className="profile-img"
           src={imagemPerfil}
           alt="Perfil"
-          style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
         />
       )}
       <span>{nomeUtilizador}</span>
