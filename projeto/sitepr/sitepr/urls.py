@@ -13,3 +13,7 @@ urlpatterns = [
 
 if settings.DEBUG:
  urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+ #    path('api/', include('database.urls')), 
+ #   path('aulas/', include('aulas.urls')),  
+ #   path('', include('users.urls')),  # <-- ISTO É IMPORTANTE!
