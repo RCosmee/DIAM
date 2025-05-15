@@ -3,53 +3,11 @@ import Header from './Header';
 import './Marcacoes.css';
 
 import React, { useState, useRef, useEffect } from 'react';
+import api from './api'; // <- Importa o axios configurado
 
 const todasModalidades = [
   'Crossfit', 'Yoga', 'Zumba', 'PT', 'Pilates',
   'JUMP', 'Kickboxing', 'HIIT', 'Capoeira', 'Boxe', 'Bicicleta'
-];
-
-const aulasDisponiveis = [
-  {
-    id: 1,
-    data: '2025-05-15',
-    horaInicio: '09:00',
-    horaFim: '11:00',
-    modalidade: 'Pilates',
-    descricao: 'Aula de Pilates para todos os níveis.'
-  },
-  {
-    id: 2,
-    data: '2025-05-16',
-    horaInicio: '17:00',
-    horaFim: '19:00',
-    modalidade: 'Pilates',
-    descricao: 'Trabalho de respiração e postura com foco em flexibilidade.'
-  },
-  {
-    id: 3,
-    data: '2025-05-17',
-    horaInicio: '08:00',
-    horaFim: '10:00',
-    modalidade: 'Yoga',
-    descricao: 'Yoga matinal com foco em alongamento e respiração.'
-  },
-  {
-    id: 4,
-    data: '2025-05-18',
-    horaInicio: '10:00',
-    horaFim: '12:00',
-    modalidade: 'Boxe',
-    descricao: 'Aula de Boxe para iniciantes.'
-  },
-  {
-    id: 5,
-    data: '2025-05-19',
-    horaInicio: '18:00',
-    horaFim: '20:00',
-    modalidade: 'Zumba',
-    descricao: 'Aula animada de Zumba para todas as idades.'
-  },
 ];
 
 const Marcacoes = () => {
@@ -57,8 +15,17 @@ const Marcacoes = () => {
   const [data, setData] = useState('');
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
+  const [aulas, setAulas] = useState([]);
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
+
   const dropdownRef = useRef(null);
+  const userId = 1; // ← Aqui colocas o ID do utilizador autenticado
+
+  useEffect(() => {
+    api.get('aulas/')
+      .then(response => setAulas(response.data))
+      .catch(error => console.error('Erro ao buscar aulas:', error));
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -82,7 +49,7 @@ const Marcacoes = () => {
     setMostrarDropdown(false);
   };
 
-  const aulasFiltradas = aulasDisponiveis.filter((aula) => {
+  const aulasFiltradas = aulas.filter((aula) => {
     const correspondeModalidade =
       modalidadesSelecionadas.length === 0 ||
       modalidadesSelecionadas.includes(aula.modalidade);
@@ -91,12 +58,31 @@ const Marcacoes = () => {
     return correspondeModalidade && correspondeData;
   });
 
+  const marcarAula = (aulaId) => {
+    api.post('marcacoes/', {
+      aula: aulaId,
+      atleta: userId,
+      status: 'marcada',
+    })
+      .then(() => {
+        alert('Aula marcada com sucesso!');
+        setAulasMarcadas(prev => [...prev, aulaId]);
+      })
+      .catch(() => alert('Erro ao marcar aula.'));
+  };
+
+  const desmarcarAula = (aulaId) => {
+    // Aqui podes adaptar com DELETE ou outra rota do backend
+    alert('Funcionalidade de desmarcar ainda não implementada.');
+    setAulasMarcadas(prev => prev.filter(id => id !== aulaId));
+  };
+
   const alternarMarcacao = (id) => {
-    setAulasMarcadas((prevMarcadas) =>
-      prevMarcadas.includes(id)
-        ? prevMarcadas.filter((marcada) => marcada !== id)
-        : [...prevMarcadas, id]
-    );
+    if (aulasMarcadas.includes(id)) {
+      desmarcarAula(id);
+    } else {
+      marcarAula(id);
+    }
     setAulaSelecionada(null); // Fecha o modal
   };
 
@@ -163,13 +149,13 @@ const Marcacoes = () => {
                 onClick={() => setAulaSelecionada(aula)}
               >
                 <strong>{aula.data}</strong><br />
-                {aula.horaInicio} - {aula.horaFim}<br />
+                {aula.hora_inicio} - {aula.hora_fim}<br />
                 {aula.modalidade}
               </button>
             ))
           )}
         </div>
-      </div> {/* Fecha .container */}
+      </div>
 
       {aulaSelecionada && (
         <div className="detalhes-aula">
@@ -177,7 +163,7 @@ const Marcacoes = () => {
             <h3>{aulaSelecionada.modalidade}</h3>
             <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
             <p><strong>Data:</strong> {aulaSelecionada.data}</p>
-            <p><strong>Horário:</strong> {aulaSelecionada.horaInicio} - {aulaSelecionada.horaFim}</p>
+            <p><strong>Horário:</strong> {aulaSelecionada.hora_inicio} - {aulaSelecionada.hora_fim}</p>
             <div className="modal-buttons">
               <button onClick={() => alternarMarcacao(aulaSelecionada.id)}>
                 {aulasMarcadas.includes(aulaSelecionada.id) ? 'Desmarcar' : 'Marcar'}
@@ -192,4 +178,3 @@ const Marcacoes = () => {
 };
 
 export default Marcacoes;
-
