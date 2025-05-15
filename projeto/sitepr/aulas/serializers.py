@@ -21,7 +21,7 @@ class AulaSerializer(serializers.ModelSerializer):
             'hora_inicio',
             'hora_fim',
             'max_participantes',
-            'descricao'
+            
         )
 class MarcacaoSerializer(serializers.ModelSerializer):
     atleta = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
