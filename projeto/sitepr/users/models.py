@@ -14,6 +14,6 @@ class PersonalTrainer(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    imagem = models.ImageField(upload_to='imagens_perfil/', default='dafault.png', blank=True, null=True)
+    imagem = models.ImageField(upload_to='imagens_perfil/', default='imagens_perfil/default.png', blank=True, null=True)
 
   
