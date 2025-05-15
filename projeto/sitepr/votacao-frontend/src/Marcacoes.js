@@ -154,23 +154,23 @@ const Marcacoes = () => {
           </label>
         </div>
 
-        <div className="aulas-lista">
-          {aulasFiltradas.length === 0 ? (
-            <p>Sem marcações no momento.</p>
-          ) : (
-            aulasFiltradas.map((aula) => (
-              <button
-                key={aula.id}
-                className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
-                onClick={() => setAulaSelecionada(aula)}
-              >
-                <strong>{aula.data}</strong><br />
-                {aula.horaInicio} - {aula.horaFim}<br />
-                {aula.modalidade}
-              </button>
-            ))
-          )}
-        </div>
+       <div className="aulas-container">
+  {aulasFiltradas.length === 0 ? (
+    <p>Sem marcações no momento.</p>
+  ) : (
+    aulasFiltradas.map((aula) => (
+      <button
+        key={aula.id}
+        className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
+        onClick={() => setAulaSelecionada(aula)}
+      >
+        <strong>{aula.data}</strong><br />
+        {aula.horaInicio} - {aula.horaFim}<br />
+        {aula.modalidade}
+      </button>
+    ))
+  )}
+</div>
 
         {aulaSelecionada && (
           <div className="modal-overlay">
