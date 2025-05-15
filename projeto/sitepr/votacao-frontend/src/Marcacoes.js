@@ -50,7 +50,6 @@ const aulasDisponiveis = [
     modalidade: 'Zumba',
     descricao: 'Aula animada de Zumba para todas as idades.'
   },
-  // Adicione mais aulas conforme necessário
 ];
 
 const Marcacoes = () => {
@@ -87,8 +86,7 @@ const Marcacoes = () => {
     const correspondeModalidade =
       modalidadesSelecionadas.length === 0 ||
       modalidadesSelecionadas.includes(aula.modalidade);
-    const correspondeData =
-      data === '' || aula.data === data;
+    const correspondeData = data === '' || aula.data === data;
 
     return correspondeModalidade && correspondeData;
   });
@@ -99,7 +97,7 @@ const Marcacoes = () => {
         ? prevMarcadas.filter((marcada) => marcada !== id)
         : [...prevMarcadas, id]
     );
-    setAulaSelecionada(null); // fecha o modal ao marcar/desmarcar
+    setAulaSelecionada(null); // Fecha o modal
   };
 
   return (
@@ -154,40 +152,41 @@ const Marcacoes = () => {
           </label>
         </div>
 
-       <div className="aulas-container">
-  {aulasFiltradas.length === 0 ? (
-    <p>Sem marcações no momento.</p>
-  ) : (
-    aulasFiltradas.map((aula) => (
-      <button
-        key={aula.id}
-        className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
-        onClick={() => setAulaSelecionada(aula)}
-      >
-        <strong>{aula.data}</strong><br />
-        {aula.horaInicio} - {aula.horaFim}<br />
-        {aula.modalidade}
-      </button>
-    ))
-  )}
-</div>
+        <div className="aulas-container">
+          {aulasFiltradas.length === 0 ? (
+            <p>Sem marcações no momento.</p>
+          ) : (
+            aulasFiltradas.map((aula) => (
+              <button
+                key={aula.id}
+                className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
+                onClick={() => setAulaSelecionada(aula)}
+              >
+                <strong>{aula.data}</strong><br />
+                {aula.horaInicio} - {aula.horaFim}<br />
+                {aula.modalidade}
+              </button>
+            ))
+          )}
+        </div>
+      </div> {/* Fecha .container */}
 
-        {aulaSelecionada && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>{aulaSelecionada.modalidade}</h3>
-              <p>{aulaSelecionada.descricao}</p>
-              <p>{aulaSelecionada.data} | {aulaSelecionada.horaInicio} - {aulaSelecionada.horaFim}</p>
-              <div className="modal-buttons">
-                <button onClick={() => alternarMarcacao(aulaSelecionada.id)}>
-                  {aulasMarcadas.includes(aulaSelecionada.id) ? 'Desmarcar' : 'Marcar'}
-                </button>
-                <button onClick={() => setAulaSelecionada(null)}>Fechar</button>
-              </div>
+      {aulaSelecionada && (
+        <div className="detalhes-aula">
+          <div className="modal-box">
+            <h3>{aulaSelecionada.modalidade}</h3>
+            <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
+            <p><strong>Data:</strong> {aulaSelecionada.data}</p>
+            <p><strong>Horário:</strong> {aulaSelecionada.horaInicio} - {aulaSelecionada.horaFim}</p>
+            <div className="modal-buttons">
+              <button onClick={() => alternarMarcacao(aulaSelecionada.id)}>
+                {aulasMarcadas.includes(aulaSelecionada.id) ? 'Desmarcar' : 'Marcar'}
+              </button>
+              <button onClick={() => setAulaSelecionada(null)}>Fechar</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
