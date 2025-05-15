@@ -3,7 +3,6 @@ import Header from './Header';
 import './Marcacoes.css';
 
 import React, { useState, useRef, useEffect } from 'react';
-import api from './api'; // <- Importa o axios configurado
 
 const todasModalidades = [
   'Crossfit', 'Yoga', 'Zumba', 'PT', 'Pilates',
@@ -15,17 +14,17 @@ const Marcacoes = () => {
   const [data, setData] = useState('');
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
-  const [aulas, setAulas] = useState([]);
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
+  const [aulasDisponiveis, setAulasDisponiveis] = useState([]);
+  const [novaAula, setNovaAula] = useState({
+    modalidade: '',
+    data: '',
+    hora_inicio: '',
+    hora_fim: '',
+    descricao: ''
+  });
 
   const dropdownRef = useRef(null);
-  const userId = 1; // ← Aqui colocas o ID do utilizador autenticado
-
-  useEffect(() => {
-    api.get('aulas/')
-      .then(response => setAulas(response.data))
-      .catch(error => console.error('Erro ao buscar aulas:', error));
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -34,6 +33,16 @@ const Marcacoes = () => {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
+
+    // Busca as aulas disponíveis do backend ao carregar o componente
+    fetch('http://localhost:8000/api/aulas/')
+      .then(response => response.json())
+      .then(data => {
+        // Como a modalidade vem como ID, pode ser necessário buscar o nome da modalidade aqui,
+        // ou modificar o backend para retornar nome da modalidade diretamente.
+        setAulasDisponiveis(data);
+      });
+
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
@@ -49,41 +58,68 @@ const Marcacoes = () => {
     setMostrarDropdown(false);
   };
 
-  const aulasFiltradas = aulas.filter((aula) => {
+  const aulasFiltradas = aulasDisponiveis.filter((aula) => {
     const correspondeModalidade =
       modalidadesSelecionadas.length === 0 ||
-      modalidadesSelecionadas.includes(aula.modalidade);
+      modalidadesSelecionadas.includes(aula.modalidade_nome || aula.modalidade); // aqui supõe-se que você tenha o nome da modalidade ou o ID
     const correspondeData = data === '' || aula.data === data;
 
     return correspondeModalidade && correspondeData;
   });
 
-  const marcarAula = (aulaId) => {
-    api.post('marcacoes/', {
-      aula: aulaId,
-      atleta: userId,
-      status: 'marcada',
-    })
-      .then(() => {
-        alert('Aula marcada com sucesso!');
-        setAulasMarcadas(prev => [...prev, aulaId]);
-      })
-      .catch(() => alert('Erro ao marcar aula.'));
-  };
-
-  const desmarcarAula = (aulaId) => {
-    // Aqui podes adaptar com DELETE ou outra rota do backend
-    alert('Funcionalidade de desmarcar ainda não implementada.');
-    setAulasMarcadas(prev => prev.filter(id => id !== aulaId));
-  };
-
   const alternarMarcacao = (id) => {
-    if (aulasMarcadas.includes(id)) {
-      desmarcarAula(id);
-    } else {
-      marcarAula(id);
-    }
+    setAulasMarcadas((prevMarcadas) =>
+      prevMarcadas.includes(id)
+        ? prevMarcadas.filter((marcada) => marcada !== id)
+        : [...prevMarcadas, id]
+    );
     setAulaSelecionada(null); // Fecha o modal
+  };
+
+  // Função para adicionar nova aula via POST para o backend
+  const adicionarAula = (e) => {
+    e.preventDefault();
+
+    // Transformar modalidade em ID? Supondo que a modalidade seja o nome, você pode precisar ajustar isso no backend
+    // Para teste, vamos enviar a modalidade como string. Se for necessário, ajuste para enviar o ID da modalidade.
+
+    const payload = {
+      modalidade: novaAula.modalidade,  // Se for ID, coloque o ID aqui
+      data: novaAula.data,
+      hora_inicio: novaAula.hora_inicio,
+      hora_fim: novaAula.hora_fim,
+      descricao: novaAula.descricao,
+      max_participantes: 20  // Pode adicionar campo no formulário para isso se quiser
+    };
+
+    fetch('http://localhost:8000/api/aulas/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Aula adicionada com sucesso!');
+        // Atualiza a lista de aulas após adicionar
+        return response.json();
+      } else {
+        alert('Erro ao adicionar aula.');
+        throw new Error('Erro ao adicionar aula');
+      }
+    })
+    .then(novaAulaCriada => {
+      setAulasDisponiveis([...aulasDisponiveis, novaAulaCriada]);
+      setNovaAula({
+        modalidade: '',
+        data: '',
+        hora_inicio: '',
+        hora_fim: '',
+        descricao: ''
+      });
+    })
+    .catch(console.error);
   };
 
   return (
@@ -94,6 +130,44 @@ const Marcacoes = () => {
       <div className="container">
         <h2 className="subtitulo">Marcações</h2>
 
+        {/* FORMULÁRIO PARA ADICIONAR NOVA AULA */}
+        <form onSubmit={adicionarAula} className="formulario-aula">
+          <h3>Adicionar Nova Aula</h3>
+          <input
+            type="text"
+            placeholder="Modalidade (ex: Pilates)"
+            value={novaAula.modalidade}
+            onChange={(e) => setNovaAula({ ...novaAula, modalidade: e.target.value })}
+            required
+          />
+          <input
+            type="date"
+            value={novaAula.data}
+            onChange={(e) => setNovaAula({ ...novaAula, data: e.target.value })}
+            required
+          />
+          <input
+            type="time"
+            value={novaAula.hora_inicio}
+            onChange={(e) => setNovaAula({ ...novaAula, hora_inicio: e.target.value })}
+            required
+          />
+          <input
+            type="time"
+            value={novaAula.hora_fim}
+            onChange={(e) => setNovaAula({ ...novaAula, hora_fim: e.target.value })}
+            required
+          />
+          <textarea
+            placeholder="Descrição"
+            value={novaAula.descricao}
+            onChange={(e) => setNovaAula({ ...novaAula, descricao: e.target.value })}
+            required
+          ></textarea>
+          <button type="submit">Adicionar Aula</button>
+        </form>
+
+        {/* FILTROS DE MODALIDADE E DATA */}
         <div className="filtros">
           <label>
             Modalidade:
@@ -138,6 +212,7 @@ const Marcacoes = () => {
           </label>
         </div>
 
+        {/* LISTA DE AULAS FILTRADAS */}
         <div className="aulas-container">
           {aulasFiltradas.length === 0 ? (
             <p>Sem marcações no momento.</p>
@@ -150,17 +225,19 @@ const Marcacoes = () => {
               >
                 <strong>{aula.data}</strong><br />
                 {aula.hora_inicio} - {aula.hora_fim}<br />
-                {aula.modalidade}
+                {/* Se tiver nome da modalidade, use aula.modalidade_nome, senão aula.modalidade */}
+                {aula.modalidade_nome || aula.modalidade}
               </button>
             ))
           )}
         </div>
-      </div>
+      </div> {/* Fecha .container */}
 
+      {/* DETALHES DA AULA SELECIONADA */}
       {aulaSelecionada && (
         <div className="detalhes-aula">
           <div className="modal-box">
-            <h3>{aulaSelecionada.modalidade}</h3>
+            <h3>{aulaSelecionada.modalidade_nome || aulaSelecionada.modalidade}</h3>
             <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
             <p><strong>Data:</strong> {aulaSelecionada.data}</p>
             <p><strong>Horário:</strong> {aulaSelecionada.hora_inicio} - {aulaSelecionada.hora_fim}</p>
