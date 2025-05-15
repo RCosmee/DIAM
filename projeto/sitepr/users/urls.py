@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import get_user_by_email
 
 urlpatterns = [
     path("api/signup/", views.signup),
@@ -8,4 +9,5 @@ urlpatterns = [
     path("api/reset-password/", views.reset_password),
     path("api/user/", views.user_data),
     path("api/profile/", views.profile_view),
+    path('api/user/by-email/', get_user_by_email),
 ]

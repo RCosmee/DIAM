@@ -111,6 +111,22 @@ def user_data(request):
         'tipo_conta': tipo_conta,
     })
 
+@api_view(['GET'])
+def get_user_by_email(request):
+    email = request.query_params.get('email')
+    if not email:
+        return Response({'error': 'Email not provided'}, status=400)
+
+    try:
+        user = User.objects.get(email=email)
+        profile = user.profile  # ou adapte conforme seu modelo
+        return Response({
+            'nome': user.username,
+            'imagem': profile.image.url if profile.image else None
+        })
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=404)
+
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])

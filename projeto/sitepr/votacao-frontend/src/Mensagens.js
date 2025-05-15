@@ -5,13 +5,23 @@ import Header from './Header';
 import './Mensagens.css';
 
 export default function Mensagens() {
-  const [chats, setChats] = useState([]);             // Lista de chats vindos da API
-  const [selectedChat, setSelectedChat] = useState(null); // Chat selecionado
-  const [messages, setMessages] = useState([]);       // Mensagens do chat selecionado
-  const [newMessage, setNewMessage] = useState("");   // Nova mensagem
-  const [searchTerm, setSearchTerm] = useState("");   // Termo de pesquisa
+  const [chats, setChats] = useState([]);             
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [messages, setMessages] = useState([]);       
+  const [newMessage, setNewMessage] = useState("");   
+  const [searchTerm, setSearchTerm] = useState("");   
+  const [userEmail, setUserEmail] = useState("");     // estado para email do user
 
   const BASE_URL = 'http://127.0.0.1:8000/api';
+
+  // Buscar dados do user atual (email)
+  useEffect(() => {
+    axios.get(`${BASE_URL}/user/me/`)  // ajusta para o endpoint real que retorna o user atual
+      .then(response => {
+        setUserEmail(response.data.email);
+      })
+      .catch(err => console.error("Erro ao carregar usuário atual:", err));
+  }, []);
 
   // Buscar todos os chats ao carregar a página
   useEffect(() => {
@@ -19,7 +29,7 @@ export default function Mensagens() {
       .then(response => {
         setChats(response.data);
         if (response.data.length > 0) {
-          setSelectedChat(response.data[0]);  // Selecionar o primeiro chat por padrão
+          setSelectedChat(response.data[0]);
         }
       })
       .catch(err => console.error("Erro ao carregar chats:", err));
@@ -36,16 +46,15 @@ export default function Mensagens() {
     }
   }, [selectedChat]);
 
-  // Filtrar os chats com base no termo de pesquisa
   const filteredChats = chats.filter(chat => 
     chat.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedChat) return;
+    if (!newMessage.trim() || !selectedChat || !userEmail) return;
 
     axios.post(`${BASE_URL}/messages/${selectedChat.pk}/`, {
-      sender: "Você",
+      sender: userEmail,    // usa o email do user atual
       content: newMessage,
       chat: selectedChat.pk
     })
@@ -71,7 +80,7 @@ export default function Mensagens() {
               type="text"
               placeholder="Pesquisar..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)} // Atualiza o termo de pesquisa
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
           <ul className="contacts-list-items">
@@ -105,9 +114,12 @@ export default function Mensagens() {
 
             <div className="chat-history">
               {messages.map((msg, idx) => (
-                <div key={idx} className={`chat-message ${msg.sender === "Você" ? "sent" : "received"}`}>
+                <div
+                  key={idx}
+                  className={`chat-message ${msg.sender === userEmail ? "sent" : "received"}`}
+                >
                   <div className="chat-message-meta">
-                    {msg.sender !== "Você" && (
+                    {msg.sender !== userEmail && (
                       <img
                         src={selectedChat.avatar}
                         alt={msg.sender}
