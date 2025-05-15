@@ -20,16 +20,23 @@ class ProfileSerializer(serializers.ModelSerializer):
             return 'Desconhecido'
 
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', {})
+        request = self.context.get('request')
 
+        if request and request.data.get('remove_image'):
+            # Só apagar se não for a imagem default
+            if instance.imagem and not instance.imagem.name.endswith('default.png'):
+                instance.imagem.delete(save=False)
+            instance.imagem = None  # ou deixa vazio para usar default no frontend
+        else:
+            imagem = validated_data.get('imagem')
+            if imagem is not None:
+                instance.imagem = imagem
+
+        user_data = validated_data.pop('user', {})
         username = user_data.get('username')
         if username:
             instance.user.username = username
             instance.user.save()
-
-        imagem = validated_data.get('imagem')
-        if imagem is not None:
-            instance.imagem = imagem
 
         instance.save()
         return instance

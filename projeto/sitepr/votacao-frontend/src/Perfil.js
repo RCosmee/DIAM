@@ -10,7 +10,9 @@ const Perfil = () => {
   const [tipo, setTipo] = useState('');
   const [imagem, setImagem] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [removerImagem, setRemoverImagem] = useState(false);
   const navigate = useNavigate();
+
 
   const USER_URL = 'http://localhost:8000/api/user/';
   const PROFILE_URL = 'http://localhost:8000/api/profile/';
@@ -23,17 +25,19 @@ const Perfil = () => {
   };
 
   useEffect(() => {
-    // Busca os dados do usuário, incluindo o tipo_conta
     axios.get(USER_URL, { withCredentials: true })
       .then(res => {
         setNome(res.data.nome);
-        setTipo(res.data.tipo_conta);  // Pega o tipo da resposta
+        setTipo(res.data.tipo_conta);
         if (res.data.imagem) {
           setPreviewUrl('http://localhost:8000' + res.data.imagem);
+        } else {
+          setPreviewUrl('http://localhost:8000/media/imagens_perfil/default.png');
         }
       })
       .catch(err => {
         console.error('Erro ao carregar dados do utilizador:', err);
+        setPreviewUrl('http://localhost:8000/media/imagens_perfil/default.png');
       });
   }, []);
 
@@ -48,31 +52,41 @@ const Perfil = () => {
     }
   };
 
-  const handleUpload = async (e) => {
-    e.preventDefault();
+  
+const handleRemoveImage = () => {
+  setRemoverImagem(true);
+  setImagem(null);
+  setPreviewUrl('http://localhost:8000/media/imagens_perfil/default.png');
+};
 
-    const formData = new FormData();
-    formData.append('nome', nome);
-    if (imagem) {
-      formData.append('imagem', imagem);
-    }
+const handleUpload = async (e) => {
+  e.preventDefault();
 
-    try {
-      await axios.put(PROFILE_URL, formData, {
-        headers: {
-          'X-CSRFToken': getCSRFToken(),
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true,
-      });
-      alert('Perfil atualizado com sucesso!');
-      navigate(0); // recarrega a pagina logo
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error);
-      alert('Erro ao atualizar perfil.');
-    }
-  };
+  const formData = new FormData();
+  formData.append('nome', nome);
 
+  if (removerImagem) {
+    formData.append('remove_image', 'true');  // Indica que a imagem deve ser removida
+  } else if (imagem) {
+    formData.append('imagem', imagem);
+  }
+
+  try {
+    await axios.put(PROFILE_URL, formData, {
+      headers: {
+        'X-CSRFToken': getCSRFToken(),
+        'Content-Type': 'multipart/form-data',
+      },
+      withCredentials: true,
+    });
+    alert('Perfil atualizado com sucesso!');
+    setRemoverImagem(false);  // Resetar a flag após salvar
+    navigate(0);
+  } catch (error) {
+    console.error('Erro ao atualizar perfil:', error);
+    alert('Erro ao atualizar perfil.');
+  }
+};
   return (
     <>
       <Header />
@@ -97,10 +111,13 @@ const Perfil = () => {
               src={previewUrl}
               alt="Imagem de Perfil"
               className="perfil-image"
-              style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '10px' }}
             />
           ) : (
-            <p>Sem imagem de perfil.</p>
+            <img
+              src="http://localhost:8000/media/imagens_perfil/default.png"
+              alt="Imagem Padrão"
+              className="perfil-image"
+            />
           )}
         </div>
 
@@ -109,6 +126,7 @@ const Perfil = () => {
 
         <div className="perfil-buttons">
           <button onClick={handleUpload}>Guardar Alterações</button>
+          <button type="button" onClick={handleRemoveImage}>Remover Imagem</button>
           <button onClick={() => navigate(-1)}>Voltar</button>
         </div>
       </div>

@@ -43,7 +43,7 @@ const Header = () => {
 
   return (
     <div className="top-bar">
-    <h1>GYM</h1>
+    <h1 onClick={() => navigate('/PaginaPrincipal')} style={{ cursor: 'pointer' }}>GYM</h1>
     <div className="user-actions" onClick={handleProfile} style={{ cursor: 'pointer' }}>
       {imagemPerfil && (
         <img

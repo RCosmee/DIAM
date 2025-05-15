@@ -128,7 +128,7 @@ def profile_view(request):
     elif request.method == 'PUT':
         try:
             profile = Profile.objects.get(user=request.user)
-            serializer = ProfileSerializer(profile, data=request.data)
+            serializer = ProfileSerializer(profile, data=request.data, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
