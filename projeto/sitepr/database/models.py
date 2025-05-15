@@ -5,6 +5,10 @@ class Chat(models.Model):
     name = models.CharField(max_length=100, unique=True, blank=True, null=True)
     avatar = models.URLField(blank=True, null=True)  # avatar do grupo
     participants = models.ManyToManyField(User, related_name='chats')  # lista de usuários
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     def __str__(self):
         return self.name or "Chat sem nome"
 
@@ -16,4 +20,8 @@ class Message(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+<<<<<<< Updated upstream
         return f'{self.sender.username}: {self.content[:20]}'
+=======
+        return f'{self.sender.username}: {self.content[:20]}'
+>>>>>>> Stashed changes
