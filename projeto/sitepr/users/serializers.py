@@ -7,7 +7,15 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['nome', 'imagem']
+        fields = ['nome', 'imagem','tipo_conta']
+
+    def get_tipo_conta(self, obj):
+        if hasattr(obj.user, 'atleta'):
+            return 'atleta'
+        elif hasattr(obj.user, 'personaltrainer'):
+            return 'pt'
+        else:
+            return 'desconhecido'
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)

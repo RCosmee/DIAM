@@ -9,6 +9,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.http import JsonResponse 
+from django.views.decorators.csrf import csrf_exempt 
+from django.core.files.storage import FileSystemStorage 
+import os 
+from datetime import datetime 
+import logging 
+logger = logging.getLogger(__name__) 
+
 
 
 
@@ -83,11 +91,26 @@ def reset_password(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_data(request):
-    user = request.user
+    try:
+        profile = Profile.objects.get(user=request.user)
+        imagem_url = profile.imagem.url if profile.imagem else None
+    except Profile.DoesNotExist:
+        imagem_url = None
+
+    # Detectar tipo_conta com base nas relações
+    if hasattr(request.user, 'atleta'):
+        tipo_conta = 'Atleta'
+    elif hasattr(request.user, 'personaltrainer'):
+        tipo_conta = 'Personal Trainer'
+    else:
+        tipo_conta = 'Desconhecido'
+
     return Response({
-        'nome': user.get_full_name() or user.username,
-        'imagem': None  # mais tarde podes ir buscar isto de um perfil se quiseres
+        'nome': request.user.get_full_name() or request.user.username,
+        'imagem': imagem_url,
+        'tipo_conta': tipo_conta,
     })
+
 
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
@@ -107,7 +130,7 @@ def profile_view(request):
             profile = Profile.objects.get(user=request.user)
             serializer = ProfileSerializer(profile, data=request.data)
             if serializer.is_valid():
-                serializer.save(user=request.user)
+                serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

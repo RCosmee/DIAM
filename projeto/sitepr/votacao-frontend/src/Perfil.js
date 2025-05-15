@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import './Perfil.css';
+import Sidebar from './Sidebar';
+import Header from './Header';
 
 const Perfil = () => {
   const [nome, setNome] = useState('');
+  const [tipo, setTipo] = useState('');
   const [imagem, setImagem] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const navigate = useNavigate();
@@ -12,7 +15,6 @@ const Perfil = () => {
   const USER_URL = 'http://localhost:8000/api/user/';
   const PROFILE_URL = 'http://localhost:8000/api/profile/';
 
-  // Obter CSRF token dos cookies
   const getCSRFToken = () => {
     return document.cookie
       .split('; ')
@@ -20,11 +22,12 @@ const Perfil = () => {
       ?.split('=')[1];
   };
 
-  // Carregar dados do utilizador
   useEffect(() => {
+    // Busca os dados do usuário, incluindo o tipo_conta
     axios.get(USER_URL, { withCredentials: true })
       .then(res => {
         setNome(res.data.nome);
+        setTipo(res.data.tipo_conta);  // Pega o tipo da resposta
         if (res.data.imagem) {
           setPreviewUrl('http://localhost:8000' + res.data.imagem);
         }
@@ -70,23 +73,45 @@ const Perfil = () => {
   };
 
   return (
-    <div className="perfil-container">
-      <h1>Meu Perfil</h1>
+    <>
+      <Header />
+      <Sidebar />
+      <div className="perfil-container">
+        <h1>Meu Perfil</h1>
 
-      <label>Nome</label>
-      <input
-        type="text"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
+        <label>Nome</label>
+        <input
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
 
-      <label>Imagem de Perfil</label>
-      <input type="file" accept="image/*" onChange={handleImageChange} />
-      {previewUrl && <img src={previewUrl} alt="Preview" className="perfil-image" />}
-      <br></br>
-      <button onClick={handleUpload}>Guardar Alterações</button>
-      <button onClick={() => navigate(-1)}>Voltar</button>
-    </div>
+        <label>Tipo de Utilizador</label>
+        <input type="text" value={tipo} disabled />
+
+        <label>Imagem de Perfil Atual</label>
+        <div className="imagem-container">
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt="Imagem de Perfil"
+              className="perfil-image"
+              style={{ maxWidth: '200px', maxHeight: '200px', borderRadius: '10px' }}
+            />
+          ) : (
+            <p>Sem imagem de perfil.</p>
+          )}
+        </div>
+
+        <label>Alterar Imagem de Perfil</label>
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+
+        <div className="perfil-buttons">
+          <button onClick={handleUpload}>Guardar Alterações</button>
+          <button onClick={() => navigate(-1)}>Voltar</button>
+        </div>
+      </div>
+    </>
   );
 };
 
