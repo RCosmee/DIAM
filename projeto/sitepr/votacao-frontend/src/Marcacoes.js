@@ -15,7 +15,7 @@ const Marcacoes = () => {
 
   useEffect(() => {
     axios
-      .get('http://127.0.0.1:8000/api/aulas/')
+      .get('http://localhost:8000/api/aulas/')
       .then((response) => {
         setAulasDisponiveis(response.data);
       })
@@ -47,7 +47,10 @@ const Marcacoes = () => {
   };
 
   // Filtra aulas conforme modalidades (pelo nome da modalidade) e data
-  const aulasFiltradas = aulasDisponiveis.filter((aula) => {
+ const aulasFiltradas = aulasDisponiveis.filter((aula) => {
+  const hoje = new Date();
+  const dataHora = new Date(`${aula.data}T${aula.hora_inicio}`);
+  if (dataHora < hoje) return false; // pular aulas antigas
     const nomeModalidade = aula.modalidade?.nome;
     const correspondeModalidade =
       modalidadesSelecionadas.length === 0 || modalidadesSelecionadas.includes(nomeModalidade);
@@ -60,7 +63,15 @@ const Marcacoes = () => {
  const aulasOrdenadas = aulasFiltradas.slice().sort((a, b) => {
   const dataHoraA = new Date(`${a.data}T${a.hora_inicio}`);
   const dataHoraB = new Date(`${b.data}T${b.hora_inicio}`);
-  return dataHoraA - dataHoraB;
+
+  // Primeiro: comparar data/hora
+  if (dataHoraA < dataHoraB) return -1;
+  if (dataHoraA > dataHoraB) return 1;
+
+  // Se as datas forem iguais, comparar por nome da modalidade
+  const nomeA = a.modalidade?.nome?.toLowerCase() || '';
+  const nomeB = b.modalidade?.nome?.toLowerCase() || '';
+  return nomeA.localeCompare(nomeB);
 });
 
   const alternarMarcacao = (id) => {
