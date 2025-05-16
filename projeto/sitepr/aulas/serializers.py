@@ -10,8 +10,8 @@ class ModalidadeSerializer(serializers.ModelSerializer):
 
 class AulaSerializer(serializers.ModelSerializer):
     modalidade = serializers.SlugRelatedField(
-        queryset=Modalidade.objects.all(),
-        slug_field='nome'
+        slug_field='nome',
+        queryset=Modalidade.objects.all()
     )
 
     class Meta:
