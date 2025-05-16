@@ -1,56 +1,8 @@
 import Sidebar from './Sidebar';
 import Header from './Header';
 import './Marcacoes.css';
-
+import axios from 'axios';
 import React, { useState, useRef, useEffect } from 'react';
-
-const todasModalidades = [
-  'Crossfit', 'Yoga', 'Zumba', 'PT', 'Pilates',
-  'JUMP', 'Kickboxing', 'HIIT', 'Capoeira', 'Boxe', 'Bicicleta'
-];
-
-const aulasDisponiveis = [
-  {
-    id: 1,
-    data: '2025-05-15',
-    horaInicio: '09:00',
-    horaFim: '11:00',
-    modalidade: 'Pilates',
-    descricao: 'Aula de Pilates para todos os níveis.'
-  },
-  {
-    id: 2,
-    data: '2025-05-16',
-    horaInicio: '17:00',
-    horaFim: '19:00',
-    modalidade: 'Pilates',
-    descricao: 'Trabalho de respiração e postura com foco em flexibilidade.'
-  },
-  {
-    id: 3,
-    data: '2025-05-17',
-    horaInicio: '08:00',
-    horaFim: '10:00',
-    modalidade: 'Yoga',
-    descricao: 'Yoga matinal com foco em alongamento e respiração.'
-  },
-  {
-    id: 4,
-    data: '2025-05-18',
-    horaInicio: '10:00',
-    horaFim: '12:00',
-    modalidade: 'Boxe',
-    descricao: 'Aula de Boxe para iniciantes.'
-  },
-  {
-    id: 5,
-    data: '2025-05-19',
-    horaInicio: '18:00',
-    horaFim: '20:00',
-    modalidade: 'Zumba',
-    descricao: 'Aula animada de Zumba para todas as idades.'
-  },
-];
 
 const Marcacoes = () => {
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState([]);
@@ -58,7 +10,19 @@ const Marcacoes = () => {
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
+  const [aulasDisponiveis, setAulasDisponiveis] = useState([]);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    axios
+      .get('http://127.0.0.1:8000/api/aulas/')
+      .then((response) => {
+        setAulasDisponiveis(response.data);
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar aulas:', error);
+      });
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -82,14 +46,22 @@ const Marcacoes = () => {
     setMostrarDropdown(false);
   };
 
+  // Filtra aulas conforme modalidades (pelo nome da modalidade) e data
   const aulasFiltradas = aulasDisponiveis.filter((aula) => {
+    const nomeModalidade = aula.modalidade?.nome;
     const correspondeModalidade =
-      modalidadesSelecionadas.length === 0 ||
-      modalidadesSelecionadas.includes(aula.modalidade);
+      modalidadesSelecionadas.length === 0 || modalidadesSelecionadas.includes(nomeModalidade);
     const correspondeData = data === '' || aula.data === data;
 
     return correspondeModalidade && correspondeData;
   });
+
+  // Ordena aulas da mais antiga para a mais futura
+ const aulasOrdenadas = aulasFiltradas.slice().sort((a, b) => {
+  const dataHoraA = new Date(`${a.data}T${a.hora_inicio}`);
+  const dataHoraB = new Date(`${b.data}T${b.hora_inicio}`);
+  return dataHoraA - dataHoraB;
+});
 
   const alternarMarcacao = (id) => {
     setAulasMarcadas((prevMarcadas) =>
@@ -97,8 +69,11 @@ const Marcacoes = () => {
         ? prevMarcadas.filter((marcada) => marcada !== id)
         : [...prevMarcadas, id]
     );
-    setAulaSelecionada(null); // Fecha o modal
+    setAulaSelecionada(null);
   };
+
+  // Coleta lista única de modalidades dos dados recebidos (caso não use todasModalidades fixo)
+  const modalidadesUnicas = Array.from(new Set(aulasDisponiveis.map(a => a.modalidade?.nome).filter(Boolean)));
 
   return (
     <div>
@@ -120,7 +95,7 @@ const Marcacoes = () => {
               </div>
               {mostrarDropdown && (
                 <div className="dropdown">
-                  {todasModalidades.map((mod, index) => (
+                  {modalidadesUnicas.map((mod, index) => (
                     <label key={index} className="option">
                       <input
                         type="checkbox"
@@ -153,31 +128,31 @@ const Marcacoes = () => {
         </div>
 
         <div className="aulas-container">
-          {aulasFiltradas.length === 0 ? (
+          {aulasOrdenadas.length === 0 ? (
             <p>Sem marcações no momento.</p>
           ) : (
-            aulasFiltradas.map((aula) => (
+            aulasOrdenadas.map((aula) => (
               <button
                 key={aula.id}
                 className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
                 onClick={() => setAulaSelecionada(aula)}
               >
                 <strong>{aula.data}</strong><br />
-                {aula.horaInicio} - {aula.horaFim}<br />
-                {aula.modalidade}
+                {aula.hora_inicio} - {aula.hora_fim}<br />
+                {aula.modalidade?.nome}
               </button>
             ))
           )}
         </div>
-      </div> {/* Fecha .container */}
+      </div>
 
       {aulaSelecionada && (
         <div className="detalhes-aula">
           <div className="modal-box">
-            <h3>{aulaSelecionada.modalidade}</h3>
-            <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
+            <h3>{aulaSelecionada.modalidade?.nome}</h3>
+            <p><strong>Descrição:</strong> {aulaSelecionada.modalidade?.descricao}</p>
             <p><strong>Data:</strong> {aulaSelecionada.data}</p>
-            <p><strong>Horário:</strong> {aulaSelecionada.horaInicio} - {aulaSelecionada.horaFim}</p>
+            <p><strong>Horário:</strong> {aulaSelecionada.hora_inicio} - {aulaSelecionada.hora_fim}</p>
             <div className="modal-buttons">
               <button onClick={() => alternarMarcacao(aulaSelecionada.id)}>
                 {aulasMarcadas.includes(aulaSelecionada.id) ? 'Desmarcar' : 'Marcar'}
@@ -192,4 +167,3 @@ const Marcacoes = () => {
 };
 
 export default Marcacoes;
-

@@ -73,7 +73,7 @@
 /* Estilo dos botões das aulas */
 .aulas-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* permite quebra de linha */
   gap: 16px;
   justify-content: center;
   margin-top: 30px;
