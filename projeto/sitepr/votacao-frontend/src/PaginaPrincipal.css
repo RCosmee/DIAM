@@ -2,6 +2,7 @@
   display: flex;
   height: 100vh;
   font-family: Arial, sans-serif;
+  margin-left: 14.5%;
 }
 
 .subtituloPP {
@@ -18,7 +19,6 @@
   width: 85.5%;
   display: block;
   float: right;
-  margin-left: 14.5%;
 }
 
 html {
