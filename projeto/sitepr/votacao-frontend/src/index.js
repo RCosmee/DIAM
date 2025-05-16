@@ -7,6 +7,8 @@ import PaginaPrincipal from './PaginaPrincipal';
 import Perfil from './Perfil';
 import Marcacoes from './Marcacoes'; 
 import Mensagens from './Mensagens'; 
+import CriarAula from './CriarAula'; // ou o caminho correto
+
 
 import "bootstrap/dist/css/bootstrap.min.css"; 
 import { BrowserRouter, Routes, Route } from "react-router-dom"; 
