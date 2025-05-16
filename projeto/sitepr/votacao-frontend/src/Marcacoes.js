@@ -57,11 +57,11 @@ const Marcacoes = () => {
   });
 
   // Ordena aulas da mais antiga para a mais futura
-  const aulasOrdenadas = aulasFiltradas.slice().sort((a, b) => {
-    const dataHoraA = new Date(`${a.data.split('-').reverse().join('-')}T${a.hora_inicio}`);
-    const dataHoraB = new Date(`${b.data.split('-').reverse().join('-')}T${b.hora_inicio}`);
-    return dataHoraA - dataHoraB;
-  });
+ const aulasOrdenadas = aulasFiltradas.slice().sort((a, b) => {
+  const dataHoraA = new Date(`${a.data}T${a.hora_inicio}`);
+  const dataHoraB = new Date(`${b.data}T${b.hora_inicio}`);
+  return dataHoraA - dataHoraB;
+});
 
   const alternarMarcacao = (id) => {
     setAulasMarcadas((prevMarcadas) =>
