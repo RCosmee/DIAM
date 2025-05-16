@@ -40,6 +40,7 @@ const Marcacoes = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Função para selecionar/deselecionar modalidades
   const toggleModalidade = (modalidade) => {
     setModalidadesSelecionadas((prev) =>
       prev.includes(modalidade)
@@ -61,6 +62,7 @@ const Marcacoes = () => {
     return correspondeModalidade && correspondeData;
   });
 
+  // Função para marcar ou desmarcar aula
   const alternarMarcacao = (id) => {
     setAulasMarcadas((prevMarcadas) =>
       prevMarcadas.includes(id)
@@ -133,7 +135,7 @@ const Marcacoes = () => {
                 onClick={() => setAulaSelecionada(aula)}
               >
                 <strong>{aula.data}</strong><br />
-                {aula.horaInicio} - {aula.horaFim}<br />
+                {aula.hora_inicio} - {aula.hora_fim}<br />
                 {aula.modalidade}
               </button>
             ))
@@ -147,7 +149,7 @@ const Marcacoes = () => {
             <h3>{aulaSelecionada.modalidade}</h3>
             <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
             <p><strong>Data:</strong> {aulaSelecionada.data}</p>
-            <p><strong>Horário:</strong> {aulaSelecionada.horaInicio} - {aulaSelecionada.horaFim}</p>
+            <p><strong>Horário:</strong> {aulaSelecionada.hora_inicio} - {aulaSelecionada.hora_fim}</p>
             <div className="modal-buttons">
               <button onClick={() => alternarMarcacao(aulaSelecionada.id)}>
                 {aulasMarcadas.includes(aulaSelecionada.id) ? 'Desmarcar' : 'Marcar'}
