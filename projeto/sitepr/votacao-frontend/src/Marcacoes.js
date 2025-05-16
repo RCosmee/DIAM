@@ -10,20 +10,15 @@ const todasModalidades = [
   'JUMP', 'Kickboxing', 'HIIT', 'Capoeira', 'Boxe', 'Bicicleta'
 ];
 
-const ENDPOINT_URL = 'http://127.0.0.1:8000/api/aulas/';
-const [aulasDisponiveis, setAulasDisponiveis] = useState([]);
-
 const Marcacoes = () => {
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState([]);
   const [data, setData] = useState('');
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
-  const [aulasDisponiveis, setAulasDisponiveis] = useState([]); // ✅ CORRETO AQUI
-
+  const [aulasDisponiveis, setAulasDisponiveis] = useState([]);
   const dropdownRef = useRef(null);
 
-  // ✅ Hook dentro do componente
   useEffect(() => {
     axios
       .get('http://127.0.0.1:8000/api/aulas/')
@@ -34,6 +29,7 @@ const Marcacoes = () => {
         console.error('Erro ao buscar aulas:', error);
       });
   }, []);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -143,7 +139,7 @@ const Marcacoes = () => {
             ))
           )}
         </div>
-      </div> {/* Fecha .container */}
+      </div>
 
       {aulaSelecionada && (
         <div className="detalhes-aula">
@@ -166,4 +162,3 @@ const Marcacoes = () => {
 };
 
 export default Marcacoes;
-
