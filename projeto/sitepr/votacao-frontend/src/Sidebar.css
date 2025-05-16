@@ -5,7 +5,7 @@
   position: fixed;
   top: 0;
   height: 100%;
-  background: #eeeeee;
+  background: #222426;
   border-right: 1px solid #808080;
 }
 
@@ -19,14 +19,14 @@
 .sidebar nav a {
   display: inline-block; /* Links ocupam apenas o espaço necessário */
   text-decoration: underline;
-  color: black;
+  color: rgb(255, 255, 255);
   font-weight: bold;
   margin-bottom: 15px; /* Aumentado o espaço entre os links (ajustável conforme necessário) */
 }
 
 .sidebar nav a.active {
   position: relative;
-  color: black;
+  color: rgb(255, 255, 255);
   text-decoration: none;
 }
 

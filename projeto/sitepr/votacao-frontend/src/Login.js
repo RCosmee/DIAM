@@ -36,7 +36,7 @@ const Login = () => {
     if (response.ok) {
       // Login bem-sucedido
       alert(data.message); // Mostrar mensagem de sucesso
-      navigate('/paginaPrincipal'); // Redirecionar para a página principal
+      navigate('/PaginaPrincipal'); // Redirecionar para a página principal
     } else {
       // Erro no login
       alert(data.error); // Mostrar mensagem de erro
