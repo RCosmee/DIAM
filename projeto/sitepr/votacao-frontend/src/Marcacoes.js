@@ -2,13 +2,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import './Marcacoes.css';
 import axios from 'axios';
-
 import React, { useState, useRef, useEffect } from 'react';
-
-const todasModalidades = [
-  'Crossfit', 'Yoga', 'Zumba', 'PT', 'Pilates',
-  'JUMP', 'Kickboxing', 'HIIT', 'Capoeira', 'Boxe', 'Bicicleta'
-];
 
 const Marcacoes = () => {
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState([]);
@@ -40,7 +34,6 @@ const Marcacoes = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Função para selecionar/deselecionar modalidades
   const toggleModalidade = (modalidade) => {
     setModalidadesSelecionadas((prev) =>
       prev.includes(modalidade)
@@ -53,24 +46,34 @@ const Marcacoes = () => {
     setMostrarDropdown(false);
   };
 
+  // Filtra aulas conforme modalidades (pelo nome da modalidade) e data
   const aulasFiltradas = aulasDisponiveis.filter((aula) => {
+    const nomeModalidade = aula.modalidade?.nome;
     const correspondeModalidade =
-      modalidadesSelecionadas.length === 0 ||
-      modalidadesSelecionadas.includes(aula.modalidade);
+      modalidadesSelecionadas.length === 0 || modalidadesSelecionadas.includes(nomeModalidade);
     const correspondeData = data === '' || aula.data === data;
 
     return correspondeModalidade && correspondeData;
   });
 
-  // Função para marcar ou desmarcar aula
+  // Ordena aulas da mais antiga para a mais futura
+  const aulasOrdenadas = aulasFiltradas.slice().sort((a, b) => {
+    const dataHoraA = new Date(`${a.data.split('-').reverse().join('-')}T${a.hora_inicio}`);
+    const dataHoraB = new Date(`${b.data.split('-').reverse().join('-')}T${b.hora_inicio}`);
+    return dataHoraA - dataHoraB;
+  });
+
   const alternarMarcacao = (id) => {
     setAulasMarcadas((prevMarcadas) =>
       prevMarcadas.includes(id)
         ? prevMarcadas.filter((marcada) => marcada !== id)
         : [...prevMarcadas, id]
     );
-    setAulaSelecionada(null); // Fecha o modal
+    setAulaSelecionada(null);
   };
+
+  // Coleta lista única de modalidades dos dados recebidos (caso não use todasModalidades fixo)
+  const modalidadesUnicas = Array.from(new Set(aulasDisponiveis.map(a => a.modalidade?.nome).filter(Boolean)));
 
   return (
     <div>
@@ -92,7 +95,7 @@ const Marcacoes = () => {
               </div>
               {mostrarDropdown && (
                 <div className="dropdown">
-                  {todasModalidades.map((mod, index) => (
+                  {modalidadesUnicas.map((mod, index) => (
                     <label key={index} className="option">
                       <input
                         type="checkbox"
@@ -125,10 +128,10 @@ const Marcacoes = () => {
         </div>
 
         <div className="aulas-container">
-          {aulasFiltradas.length === 0 ? (
+          {aulasOrdenadas.length === 0 ? (
             <p>Sem marcações no momento.</p>
           ) : (
-            aulasFiltradas.map((aula) => (
+            aulasOrdenadas.map((aula) => (
               <button
                 key={aula.id}
                 className={`aula-botao ${aulasMarcadas.includes(aula.id) ? 'aula-marcada' : ''}`}
@@ -136,7 +139,7 @@ const Marcacoes = () => {
               >
                 <strong>{aula.data}</strong><br />
                 {aula.hora_inicio} - {aula.hora_fim}<br />
-                {aula.modalidade}
+                {aula.modalidade?.nome}
               </button>
             ))
           )}
@@ -146,8 +149,8 @@ const Marcacoes = () => {
       {aulaSelecionada && (
         <div className="detalhes-aula">
           <div className="modal-box">
-            <h3>{aulaSelecionada.modalidade}</h3>
-            <p><strong>Descrição:</strong> {aulaSelecionada.descricao}</p>
+            <h3>{aulaSelecionada.modalidade?.nome}</h3>
+            <p><strong>Descrição:</strong> {aulaSelecionada.modalidade?.descricao}</p>
             <p><strong>Data:</strong> {aulaSelecionada.data}</p>
             <p><strong>Horário:</strong> {aulaSelecionada.hora_inicio} - {aulaSelecionada.hora_fim}</p>
             <div className="modal-buttons">

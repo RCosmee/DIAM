@@ -10,19 +10,16 @@ class ModalidadeSerializer(serializers.ModelSerializer):
 
 
 class AulaSerializer(serializers.ModelSerializer):
-    modalidade = serializers.SlugRelatedField(
-        slug_field='nome',
-        queryset=Modalidade.objects.all()
-    )
-    data = serializers.DateField(format="%d-%m-%Y")        # dia-mês-ano
-    hora_inicio = serializers.TimeField(format="%H:%M")    # horas:minutos
-    hora_fim = serializers.TimeField(format="%H:%M")       # horas:minutos
+    modalidade = ModalidadeSerializer()  # Agora vai retornar nome + descricao
+    data = serializers.DateField(format="%d-%m-%Y")
+    hora_inicio = serializers.TimeField(format="%H:%M")
+    hora_fim = serializers.TimeField(format="%H:%M")
 
     class Meta:
         model = Aula
         fields = (
             'id',
-            'modalidade',
+            'modalidade',  # Agora será um objeto: {"nome": "...", "descricao": "..."}
             'data',
             'hora_inicio',
             'hora_fim',
