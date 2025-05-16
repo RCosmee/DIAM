@@ -8,9 +8,11 @@ class ModalidadeSerializer(serializers.ModelSerializer):
         model = Modalidade
         fields = ('id', 'nome', 'descricao')
 
-
 class AulaSerializer(serializers.ModelSerializer):
-    modalidade = serializers.PrimaryKeyRelatedField(queryset=Modalidade.objects.all())
+    modalidade = serializers.SlugRelatedField(
+        queryset=Modalidade.objects.all(),
+        slug_field='nome'
+    )
 
     class Meta:
         model = Aula
@@ -21,8 +23,8 @@ class AulaSerializer(serializers.ModelSerializer):
             'hora_inicio',
             'hora_fim',
             'max_participantes',
-            
         )
+
 class MarcacaoSerializer(serializers.ModelSerializer):
     atleta = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
