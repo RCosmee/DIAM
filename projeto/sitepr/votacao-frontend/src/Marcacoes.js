@@ -1,6 +1,7 @@
 import Sidebar from './Sidebar';
 import Header from './Header';
 import './Marcacoes.css';
+import axios from 'axios';
 
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -9,48 +10,8 @@ const todasModalidades = [
   'JUMP', 'Kickboxing', 'HIIT', 'Capoeira', 'Boxe', 'Bicicleta'
 ];
 
-const aulasDisponiveis = [
-  {
-    id: 1,
-    data: '2025-05-15',
-    horaInicio: '09:00',
-    horaFim: '11:00',
-    modalidade: 'Pilates',
-    descricao: 'Aula de Pilates para todos os níveis.'
-  },
-  {
-    id: 2,
-    data: '2025-05-16',
-    horaInicio: '17:00',
-    horaFim: '19:00',
-    modalidade: 'Pilates',
-    descricao: 'Trabalho de respiração e postura com foco em flexibilidade.'
-  },
-  {
-    id: 3,
-    data: '2025-05-17',
-    horaInicio: '08:00',
-    horaFim: '10:00',
-    modalidade: 'Yoga',
-    descricao: 'Yoga matinal com foco em alongamento e respiração.'
-  },
-  {
-    id: 4,
-    data: '2025-05-18',
-    horaInicio: '10:00',
-    horaFim: '12:00',
-    modalidade: 'Boxe',
-    descricao: 'Aula de Boxe para iniciantes.'
-  },
-  {
-    id: 5,
-    data: '2025-05-19',
-    horaInicio: '18:00',
-    horaFim: '20:00',
-    modalidade: 'Zumba',
-    descricao: 'Aula animada de Zumba para todas as idades.'
-  },
-];
+const ENDPOINT_URL = 'http://127.0.0.1:8000/api/aulas/';
+const [aulasDisponiveis, setAulasDisponiveis] = useState([]);
 
 const Marcacoes = () => {
   const [modalidadesSelecionadas, setModalidadesSelecionadas] = useState([]);
@@ -58,8 +19,21 @@ const Marcacoes = () => {
   const [mostrarDropdown, setMostrarDropdown] = useState(false);
   const [aulaSelecionada, setAulaSelecionada] = useState(null);
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
+  const [aulasDisponiveis, setAulasDisponiveis] = useState([]); // ✅ CORRETO AQUI
+
   const dropdownRef = useRef(null);
 
+  // ✅ Hook dentro do componente
+  useEffect(() => {
+    axios
+      .get('http://127.0.0.1:8000/api/aulas/')
+      .then((response) => {
+        setAulasDisponiveis(response.data);
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar aulas:', error);
+      });
+  }, []);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
