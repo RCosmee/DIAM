@@ -20,9 +20,14 @@ const Sidebar = () => {
           Mensagens
         </Link>
         <br/>
+        <Link to="/CriarAula" className={location.pathname === '/CriarAula' ? 'active' : ''}>
+          Criar Aula
+        </Link>
+        <br/>
       </nav>
     </div>
   );
 };
 
 export default Sidebar;
+

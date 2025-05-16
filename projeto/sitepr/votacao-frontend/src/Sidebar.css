@@ -10,24 +10,24 @@
 }
 
 .nav-links {
-  display: block; /* Links ocupam apenas o espaço necessário */
+  display: block;
   margin-left: 50px;
-  margin-top: 70px; /* se precisares de afastar dos itens do header */
+  margin-top: 70px;
   font-size: 22px;
 }
 
 .sidebar nav a {
-  display: inline-block; /* Links ocupam apenas o espaço necessário */
+  display: inline-block;
   text-decoration: underline;
   color: black;
   font-weight: bold;
-  margin-bottom: 15px; /* Aumentado o espaço entre os links (ajustável conforme necessário) */
+  margin-bottom: 15px;
 }
 
 .sidebar nav a.active {
   position: relative;
   color: black;
-  text-decoration: none;
+  text-decoration: none; /* Remove sublinhado do link ativo */
 }
 
 .sidebar nav a.active::before {
@@ -37,5 +37,5 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 25px;
-  color: #007bff;
+  color: #007bff; /* Azul para indicar o link ativo */
 }

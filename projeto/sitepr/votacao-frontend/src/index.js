@@ -22,6 +22,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/marcacoes" element={<Marcacoes />} /> 
             <Route path="/mensagens" element={<Mensagens />} /> 
+            <Route path="/criarAula" element={<CriarAula />} />
             
         </Routes> 
     </BrowserRouter> 
