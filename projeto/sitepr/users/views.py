@@ -8,6 +8,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser
 from django.core.exceptions import ObjectDoesNotExist
+from .models import Profile 
 
 from django.http import JsonResponse 
 from django.views.decorators.csrf import csrf_exempt 
@@ -21,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 from .models import Atleta, PersonalTrainer, Profile  # Adiciona isso se ainda não tiveres esses modelos
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    profile = request.user.profile
+    serializer = ProfileSerializer(profile, context={'request': request})
+    return Response(serializer.data)
 
 @api_view(['POST'])
 def signup(request):
@@ -106,6 +114,7 @@ def user_data(request):
         tipo_conta = 'Desconhecido'
 
     return Response({
+        'id': request.user.id,
         'nome': request.user.get_full_name() or request.user.username,
         'imagem': imagem_url,
         'tipo_conta': tipo_conta,
@@ -153,3 +162,24 @@ def profile_view(request):
         except ObjectDoesNotExist:
             return Response({'error': "Profile does not exist"}, status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def list_all_users(request):
+    users = User.objects.all()
+    user_data = []
+
+    for user in users:
+        try:
+            profile = user.profile
+            imagem_url = profile.imagem.url if profile.imagem else None
+        except Profile.DoesNotExist:
+            imagem_url = None
+
+        user_data.append({
+            'id': user.id,
+            'nome': user.get_full_name() or user.username,
+            'imagem': imagem_url
+        })
+
+    return Response(user_data)

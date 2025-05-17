@@ -27,6 +27,7 @@ class Aula(models.Model):
         return self.data >= agora - datetime.timedelta(days=1)
 
 
+
 class Marcacao(models.Model):
     STATUS_CHOICES = [
         ('por_marcar', 'Por Marcar'),
@@ -34,16 +35,15 @@ class Marcacao(models.Model):
         ('cancelada', 'Cancelada'),
     ]
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
-    atleta = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     marcada_em = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='por_marcar')
 
     class Meta:
-        unique_together = ('aula', 'atleta')
+        unique_together = ('aula', 'user')
 
     def __str__(self):
-        return f"{self.atleta.username} - {self.aula} ({self.status})"
-
+        return f"{self.user.username} - {self.aula} ({self.status})"
 
 class Comentario(models.Model):
     aula = models.ForeignKey(Aula, on_delete=models.CASCADE)

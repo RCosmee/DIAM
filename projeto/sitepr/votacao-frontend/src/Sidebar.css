@@ -21,7 +21,7 @@
   text-decoration: underline;
   color: rgb(255, 255, 255);
   font-weight: bold;
-  margin-bottom: 15px; /* Aumentado o espaço entre os links (ajustável conforme necessário) */
+  margin-bottom: 25px; /* Aumentado o espaço entre os links (ajustável conforme necessário) */
 }
 
 .sidebar nav a.active {

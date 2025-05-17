@@ -8,21 +8,74 @@
 
 .subtitulo {
   text-align: center;
-  font-size: 28px;
+  font-size: 50px;
   margin-bottom: 24px;
   font-weight: bold;
 }
 
 .filtros {
-  margin: 20px 0;
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 20px; /* Espaço entre os filtros */
+  margin-bottom: 30px;
+}
+
+.filtros label span {
+  font-size: 2rem; /* Aumenta o tamanho da palavra Modalidade e Data */
+  font-weight: bold;
+}
+
+.select-box {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+  display: inline-block;
+}
+
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.dropdown {
+  background-color: white;
+  border: 1px solid #ccc;
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 10px;
+  width: 150px;
+  border-radius: 5px;
+}
+
+.option {
+  display: block;
+  margin: 5px 0;
+}
+
+.confirm-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.confirm-button:hover {
+  background-color: #45a049;
 }
 
 .input {
-  margin-left: 10px;
-  padding: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
 }
 
 .dropdown-container {
@@ -81,23 +134,32 @@
 
 .aula-botao {
   background-color: #fff;
-  border: 2px solid #4CAF50;
+  border: 2px solid #007bff;
   padding: 10px 15px;
   border-radius: 8px;
   cursor: pointer;
   width: 160px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
   text-align: center;
 }
 
 .aula-botao:hover {
   background-color: #f2f2f2;
+  transform: scale(1.05); /* Aumenta ligeiramente o tamanho */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais intensa */
 }
 
 .aula-botao.aula-marcada {
   background-color: #ccc;
   color: #555;
+  border: 2px solid #4CAF50;
+}
+
+/* Efeito de hover para aulas marcadas */
+.aula-botao.aula-marcada:hover {
+  background-color: #b3b3b3;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.2); /* Adiciona uma sombra leve */
 }
 
 /* === MODAL (detalhes-aula) === */
@@ -127,7 +189,8 @@
 .modal-buttons {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .modal-buttons button {
@@ -140,6 +203,91 @@
   transition: background-color 0.3s;
 }
 
-.modal-buttons button:hover {
+.modal-buttons button:not(.modal-buttons-fechar):hover {
+  background-color: #4CAF50;
+}
+
+.modal-buttons-fechar:hover {
+  background-color: #c9c9c9;
+}
+.aula-card {
+  width: 100%;
+  max-width: 800px;
+  margin: 10px auto;
+  padding: 15px 20px;
+  background-color: #f0f4ff;
+  border-left: 6px solid #4CAF50;
+  border-radius: 8px;
+  text-align: left;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* Efeito de hover no aula-card */
+.aula-card:hover {
+  background-color: #e1eaff;  /* Mudança suave de cor no fundo */
+  transform: translateY(-5px); /* Leve elevação do card */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Sombra mais intensa */
+  border-left: 6px solid #4CAF50; /* Mantém a borda verde */
+}
+
+/* Efeito de texto e borda ao passar o mouse */
+.aula-card:hover {
+  color: #4CAF50; /* Cor verde para o texto do título */
+}
+
+.aula-card:hover p {
+  color: #555; /* Textos do card ficam com uma cor mais escura no hover */
+}
+
+.aula-card:hover .botao-desmarcar:hover {
+  background-color: #d32f2f;  /* Cor de fundo quando o botão é hover */
+  border-color: #c62828;  /* Borda vermelha escura */
+}
+.aula-card strong {
+  font-size: 1.1rem;
+}
+
+.aula-card p {
+  margin: 5px 0;
+}
+
+/* Estilo para as aulas canceladas */
+.aula-card.cancelada {
+  border-left: 5px solid red; /* Borda vermelha à esquerda */
+  background-color: #f0f4ff;  /* Fundo ligeiramente vermelho claro */
+}
+
+/* Efeito de hover para aulas canceladas */
+.aula-card.cancelada:hover {
+  color: red; /* Muda a cor do texto para vermelho */
+}
+
+/* Estilo para o botão de desmarcar, apenas visível se a aula não estiver cancelada */
+.botao-desmarcar {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.botao-desmarcar:hover {
+  background-color: #0056b3;
+}
+
+.botao-desmarcar {
   background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.botao-desmarcar:hover {
+  background-color: #d32f2f; /* vermelho forte */
+  color: white;
+  border-color: #b71c1c;
 }

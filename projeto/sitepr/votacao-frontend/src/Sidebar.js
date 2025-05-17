@@ -23,12 +23,18 @@ const Sidebar = () => {
         <Link to="/PaginaPrincipal" className={location.pathname === '/PaginaPrincipal' ? 'active' : ''}>
           🏠 Página Principal
         </Link>
-        <br/>
+        <br />
 
         {tipoConta === 'Atleta' && (
-          <Link to="/Marcacoes" className={location.pathname === '/Marcacoes' ? 'active' : ''}>
-            Marcações
-          </Link>
+          <>
+            <Link to="/Marcacoes" className={location.pathname === '/Marcacoes' ? 'active' : ''}>
+              Marcações
+            </Link>
+            <br />
+            <Link to="/MinhasMarcacoes" className={location.pathname === '/MinhasMarcacoes' ? 'active' : ''}>
+              Minhas Marcações
+            </Link>
+          </>
         )}
 
         {tipoConta === 'Personal Trainer' && (
@@ -37,11 +43,11 @@ const Sidebar = () => {
           </Link>
         )}
 
-        <br/>
+        <br />
         <Link to="/Mensagens" className={location.pathname === '/Mensagens' ? 'active' : ''}>
           Mensagens
         </Link>
-        <br/>
+        <br />
       </nav>
     </div>
   );

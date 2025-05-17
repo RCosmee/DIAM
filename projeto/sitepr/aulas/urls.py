@@ -4,19 +4,23 @@ from . import views
 app_name = 'aulas'
 
 urlpatterns = [
-    path('modalidades/', views.modalidades),
-    path('modalidade/<int:modalidade_id>/', views.modalidade_detail),
+    # Modalidades
+    path('modalidades/', views.modalidades, name='modalidades'),
+    path('modalidades/<int:pk>/', views.modalidade_detail, name='modalidade_detail'),
 
-    path('aulas/', views.aulas),
-    path('aula/<int:aula_id>/', views.aula_detail),
+    # Aulas
+    path('aulas/', views.aulas, name='aulas'),
+    path('aulas/<int:pk>/', views.aula_detail, name='aula_detail'),
 
-    path('marcacoes/', views.marcacoes),
-    path('marcacao/<int:marcacao_id>/', views.marcacao_detail),
+    # Marcações
+    path('marcacoes/', views.marcacoes, name='marcacoes'),
+    path('marcacoes/<int:pk>/', views.marcacao_detail, name='marcacao_detail'),
 
-    path('comentarios/', views.comentarios),
-    path('comentario/<int:comentario_id>/', views.comentario_detail),
+    # Comentários
+    path('comentarios/', views.comentarios, name='comentarios'),
+    path('comentarios/<int:pk>/', views.comentario_detail, name='comentario_detail'),
 
-    path('avaliacoes/', views.avaliacoes),
-    path('avaliacao/<int:avaliacao_id>/', views.avaliacao_detail),
+    # Avaliações
+    path('avaliacoes/', views.avaliacoes, name='avaliacoes'),
+    path('avaliacoes/<int:pk>/', views.avaliacao_detail, name='avaliacao_detail'),
 ]
-

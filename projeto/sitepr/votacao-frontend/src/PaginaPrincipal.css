@@ -1,14 +1,12 @@
 .pagina-principal {
   display: flex;
-  height: 100vh;
   font-family: Arial, sans-serif;
   margin-left: 14.5%;
 }
 
 .subtituloPP {
   text-align: center;
-  font-size: 28px;
-  margin-bottom: 24px;
+  font-size: 50px;
   font-weight: bold;
   padding: 20px;
 }  
@@ -23,10 +21,6 @@
 
 html {
   overflow-y: scroll;
-}
-
-.calendario {
-  margin-top: 20px;
 }
 
 .mes-nav {
@@ -48,6 +42,7 @@ html {
 }
 
 .dias-mes {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   border: 1px solid #ccc;
@@ -58,6 +53,15 @@ html {
   border: 1px solid #ccc;
   padding: 5px;
   position: relative;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; /* Indica que é clicável (se aplicável) */
+}
+
+.dia-mes:hover {
+  background-color: #f0f8ff; /* Azul clarinho */
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  border-color: #007bff55;
+  z-index: 1; /* Eleva o quadrado no contexto da grid */
 }
 
 .numero-dia {
@@ -76,10 +80,20 @@ html {
   bottom: 5px;
   left: 5px;
   right: 5px;
-  background-color: #e0e0ff;
+  background-color: #3999ffee;
   padding: 3px;
   font-size: 12px;
   border-radius: 4px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center;
+}
+
+.evento:hover {
+  background-color: #2c7be5;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 2;
 }
 
 .mes-nav button {
@@ -122,4 +136,111 @@ font-size: 14px;
 cursor: pointer;
 border-radius: 4px;
 margin-left: 10px;
+}
+
+.evento {
+  margin-top: 4px;
+  padding: 3px 6px;
+  background-color: #3999ffee;
+  color: rgb(0, 0, 0);
+  font-size: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+
+.mais-aulas {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #be0000;
+  color: #ffffff;
+  font-size: 1.2em;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-weight: bold;
+  user-select: none;
+}
+.modale-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px); /* desfoca mais o fundo */
+  background-color: rgba(0, 0, 0, 0.4); /* escurece o fundo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modale-content {
+  background: linear-gradient(to bottom right, #ffffff, #f4f7ff); /* gradiente suave */
+  color: #333;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 450px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: fadeInScale 0.3s ease-in-out;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.aula-modale-item {
+  background: #f0f4ff;
+  border-left: 5px solid #4CAF50;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.aula-modale-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.aula-info {
+  flex-grow: 1;
+}
+
+.aula-modale-item button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.aula-modale-item button:hover {
+  background-color: #d32f2f; /* vermelho forte */
+  color: white;
+  border-color: #b71c1c;
+}
+.fechar-modale-btn {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.5rem 1.5rem;
+  background-color: #dc3545;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.fechar-modale-btn:hover {
+  background-color: #a71d2a;
 }
