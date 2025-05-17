@@ -4,6 +4,8 @@ from rest_framework import status
 from .serializers import ChatSerializer, MessageSerializer
 from .models import Chat, Message
 from django.db.models import Q
+from rest_framework.views import APIView
+from django.core.files.storage import default_storage
 
 @api_view(['GET', 'POST'])
 def chat_list(request):
@@ -175,3 +177,35 @@ def create_chat_without_name_avatar(request):
     serializer = ChatSerializer(chat, context={'request': request})
 
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def create_group_chat(request):
+    nome = request.data.get('nome')
+    avatar = request.data.get('avatar')
+    participants = request.data.get('participants', [])
+
+    if not nome or not avatar:
+        return Response(
+            {'error': 'Os campos "nome" e "avatar" são obrigatórios.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    if not isinstance(participants, list):
+        return Response(
+            {'error': 'O campo "participants" deve ser uma lista.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    chat = Chat.objects.create(name=nome, avatar=avatar, participants=participants)
+    serializer = ChatSerializer(chat, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class ImageUploadView(APIView):
+    def post(self, request, *args, **kwargs):
+        file = request.FILES.get('file')
+        if not file:
+            return Response({'error': 'Nenhum ficheiro recebido.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        filename = default_storage.save(f'imagens_grupo/{file.name}', file)
+        return Response({'filename': filename.split('/')[-1]}, status=status.HTTP_201_CREATED)

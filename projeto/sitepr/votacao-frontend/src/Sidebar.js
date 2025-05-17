@@ -38,9 +38,15 @@ const Sidebar = () => {
         )}
 
         {tipoConta === 'Personal Trainer' && (
-          <Link to="/CriarAula" className={location.pathname === '/CriarAula' ? 'active' : ''}>
-            Criar Aula
-          </Link>
+          <>
+            <Link to="/CriarAula" className={location.pathname === '/CriarAula' ? 'active' : ''}>
+              Criar Aula
+            </Link>
+            <br />
+            <Link to="/CriarGrupo" className={location.pathname === '/CriarGrupo' ? 'active' : ''}>
+              Criar Grupo
+            </Link>
+          </>
         )}
 
         <br />

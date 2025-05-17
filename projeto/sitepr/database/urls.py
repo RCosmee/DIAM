@@ -13,5 +13,7 @@ urlpatterns = [
     path('chats/<int:chat_id>/remove_participant/', views.remove_participant),
     path('chats/<int:chat_id>/add_participant/', views.add_participant),
     path('chats/create_chat_without_name_avatar/', views.create_chat_without_name_avatar),
+    path('chats/create_group/', views.create_group_chat),
+    path('uploads/', views.ImageUploadView.as_view()),
 
 ]
