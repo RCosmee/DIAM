@@ -3,22 +3,35 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import ChatSerializer, MessageSerializer
 from .models import Chat, Message
+from django.db.models import Q
 
-# Listar ou criar Chats
 @api_view(['GET', 'POST'])
 def chat_list(request):
     if request.method == 'GET':
-        chats = Chat.objects.all()
-        serializer = ChatSerializer(chats, many=True)
+        user_id = request.query_params.get('user_id', None)
+        
+        if user_id is not None:
+            try:
+                user_id = int(user_id)
+            except ValueError:
+                return Response({'error': 'user_id must be an integer'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Filtra chats que contenham user_id na lista participants
+            chats = Chat.objects.filter(participants__contains=[user_id])
+        else:
+            # Se não passar user_id, retorna todos os chats
+            chats = Chat.objects.all()
+
+        serializer = ChatSerializer(chats, many=True, context={'request': request})
         return Response(serializer.data)
 
-    elif request.method == 'POST':
-        serializer = ChatSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # POST (criar novo chat)
+    serializer = ChatSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        chat = serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 # Atualizar ou apagar Chat específico
@@ -83,3 +96,82 @@ def message_detail(request, message_id):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def chat_participants(request, chat_id):
+    try:
+        chat = Chat.objects.get(pk=chat_id)
+    except Chat.DoesNotExist:
+        return Response({'error': 'Chat não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    return Response({'participants': chat.participants}, status=status.HTTP_200_OK)
+
+
+
+@api_view(['DELETE'])
+def remove_participant(request, chat_id):
+    user_id = request.query_params.get('user_id', None)
+    if user_id is None:
+        return Response({'error': 'user_id é obrigatório como query param.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return Response({'error': 'user_id deve ser um inteiro.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        chat = Chat.objects.get(pk=chat_id)
+    except Chat.DoesNotExist:
+        return Response({'error': 'Chat não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if user_id not in chat.participants:
+        return Response({'error': 'Usuário não está na lista de participantes.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    chat.participants.remove(user_id)
+    chat.save()
+
+    serializer = ChatSerializer(chat, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def add_participant(request, chat_id):
+    user_id = request.query_params.get('user_id', None)
+    if user_id is None:
+        return Response({'error': 'user_id é obrigatório como query param.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return Response({'error': 'user_id deve ser um inteiro.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        chat = Chat.objects.get(pk=chat_id)
+    except Chat.DoesNotExist:
+        return Response({'error': 'Chat não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if user_id in chat.participants:
+        return Response({'message': 'Usuário já está na lista de participantes.'}, status=status.HTTP_200_OK)
+
+    chat.participants.append(user_id)
+    chat.save()
+
+    serializer = ChatSerializer(chat, context={'request': request})
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def create_chat_without_name_avatar(request):
+    participants = request.data.get('participants', None)
+
+    if not isinstance(participants, list) or not participants:
+        return Response(
+            {'error': 'O campo "participants" deve ser uma lista não vazia.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    chat = Chat.objects.create(name="", avatar="", participants=participants)
+    serializer = ChatSerializer(chat, context={'request': request})
+
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
