@@ -90,7 +90,7 @@ const handleChats = useCallback(() => {
     let alt = selectedChat.name || 'Usuário';
 
     if (selectedChat.avatar) {
-      src = `http://localhost:8000/media/imagens_perfil/${selectedChat.avatar}.png`;
+      src = `http://localhost:8000/media/imagens_grupo/${selectedChat.avatar}`;
     } else {
       const otherParticipantId = selectedChat.participants.find(id => id !== userId);
       const otherUser = allUsers.find(user => user.id === otherParticipantId);
@@ -268,7 +268,7 @@ const handleChats = useCallback(() => {
                 onClick={() => setSelectedChat(chat)}
               >
                 <img
-                  src={`http://localhost:8000/media/imagens_perfil/${chat.avatar}.png`}
+                  src={`http://localhost:8000/media/imagens_grupo/${chat.avatar}`}
                   alt={chat.name}
                   className="contact-avatar"
                   onError={(e) => {
@@ -491,7 +491,7 @@ const handleChats = useCallback(() => {
                 const otherUser = allUsers.find(user => user.id === otherParticipantId);
                 const displayName = chat.name || otherUser?.nome || "Usuário";
                 const avatarSrc = chat.avatar
-                  ? `http://localhost:8000/media/imagens_perfil/${chat.avatar}.png`
+                  ? `http://localhost:8000/media/imagens_grupo/${chat.avatar}`
                   : (otherUser?.imagem ? `http://localhost:8000${otherUser.imagem}` : 'http://localhost:8000/media/imagens_perfil/default.png');
 
                 const isChecked = selectedChats.includes(chat.pk);

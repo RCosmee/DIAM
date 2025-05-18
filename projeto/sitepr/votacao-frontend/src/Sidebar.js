@@ -28,7 +28,7 @@ const Sidebar = () => {
         {tipoConta === 'Atleta' && (
           <>
             <Link to="/Marcacoes" className={location.pathname === '/Marcacoes' ? 'active' : ''}>
-              Marcações
+              Marcar Aulas
             </Link>
             <br />
             <Link to="/MinhasMarcacoes" className={location.pathname === '/MinhasMarcacoes' ? 'active' : ''}>
