@@ -10,7 +10,10 @@ class ModalidadeSerializer(serializers.ModelSerializer):
 
 
 class AulaSerializer(serializers.ModelSerializer):
+    # Modalidade será exibida como objeto completo na leitura
     modalidade = ModalidadeSerializer(read_only=True)
+
+    # Para escrita, permite receber o nome da modalidade para associar
     modalidade_nome = serializers.SlugRelatedField(
         queryset=Modalidade.objects.all(),
         slug_field='nome',
@@ -37,7 +40,8 @@ class AulaSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         modalidade = validated_data.pop('modalidade_nome')
-        return Aula.objects.create(modalidade=modalidade, **validated_data)
+        aula = Aula.objects.create(modalidade=modalidade, **validated_data)
+        return aula
 
     def update(self, instance, validated_data):
         modalidade = validated_data.pop('modalidade_nome', None)

@@ -10,6 +10,7 @@ import MinhasMarcacoes from './MinhasMarcacoes';
 import Mensagens from './Mensagens'; 
 import CriarAula from './CriarAula';
 import CriarGrupo from './CriarGrupo';
+import Aulas from './Aulas';
 
 
 import "bootstrap/dist/css/bootstrap.min.css"; 
@@ -29,7 +30,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/mensagens" element={<Mensagens />} /> 
             <Route path="/criarAula" element={<CriarAula />} />
             <Route path="/criarGrupo" element={<CriarGrupo />} />
-            
+            <Route path="/aulas" element={<Aulas />} />
         </Routes> 
     </BrowserRouter> 
 </React.StrictMode>); 

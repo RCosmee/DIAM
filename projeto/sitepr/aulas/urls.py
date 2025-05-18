@@ -4,6 +4,8 @@ from . import views
 app_name = 'aulas'
 
 urlpatterns = [
+
+
     # Modalidades
     path('modalidades/', views.modalidades, name='modalidades'),
     path('modalidades/<int:pk>/', views.modalidade_detail, name='modalidade_detail'),
@@ -11,6 +13,7 @@ urlpatterns = [
     # Aulas
     path('aulas/', views.aulas, name='aulas'),
     path('aulas/<int:pk>/', views.aula_detail, name='aula_detail'),
+    
 
     # Marcações
     path('marcacoes/', views.marcacoes, name='marcacoes'),

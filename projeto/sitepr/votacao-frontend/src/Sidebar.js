@@ -46,6 +46,10 @@ const Sidebar = () => {
             <Link to="/CriarGrupo" className={location.pathname === '/CriarGrupo' ? 'active' : ''}>
               Criar Grupo
             </Link>
+               <br />
+         <Link to="/Aulas" className={location.pathname === '/Aulas' ? 'active' : ''}>
+          Aulas
+        </Link>
           </>
         )}
 
@@ -54,6 +58,7 @@ const Sidebar = () => {
           Mensagens
         </Link>
         <br />
+         
       </nav>
     </div>
   );
