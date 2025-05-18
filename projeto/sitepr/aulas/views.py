@@ -9,8 +9,10 @@ from rest_framework import status
 from .models import Aula
 from .serializers import AulaSerializer
 from django.shortcuts import get_object_or_404
-from .models import Modalidade, Aula, Marcacao, Comentario, Avaliacao
-from .serializers import ModalidadeSerializer, AulaSerializer, MarcacaoSerializer, ComentarioSerializer, AvaliacaoSerializer
+from .models import Modalidade, Aula, Marcacao, Comentario
+from .serializers import ModalidadeSerializer, AulaSerializer, MarcacaoSerializer, ComentarioSerializer
+from django.db.models import Avg
+
 
 # ------- Modalidade -------
 
@@ -165,71 +167,58 @@ def marcacao_detail(request, pk):
 
 # ------- Comentario -------
 
+# ------- Comentarios com avaliação -------
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated]) 
 def comentarios(request):
     if request.method == 'GET':
-        comentarios = Comentario.objects.all()
+        aula_id = request.query_params.get('aula_id', None)
+        if aula_id:
+            comentarios = Comentario.objects.filter(aula_id=aula_id).order_by('-criado_em')
+        else:
+            comentarios = Comentario.objects.all().order_by('-criado_em')
         serializer = ComentarioSerializer(comentarios, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = ComentarioSerializer(data=request.data)
+        data = request.data.copy()
+        data['autor'] = request.user.id
+        serializer = ComentarioSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            print("Erros no serializer:", serializer.errors)  # DEBUG
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+def comentarios_e_media(request, aula_id):
+    comentarios = Comentario.objects.filter(aula_id=aula_id).order_by('-criado_em')
+    media = comentarios.aggregate(media_nota=Avg('nota'))['media_nota']
+    serializer = ComentarioSerializer(comentarios, many=True)
+    return Response({
+        'media_avaliacao': media if media is not None else 0,
+        'comentarios': serializer.data
+    })
 
 @api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def comentario_detail(request, comentario_id):
     try:
         comentario = Comentario.objects.get(pk=comentario_id)
     except Comentario.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    # Talvez verificar se request.user == comentario.autor aqui
+
     if request.method == 'PUT':
-        serializer = ComentarioSerializer(comentario, data=request.data)
+        serializer = ComentarioSerializer(comentario, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         comentario.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-# ------- Avaliacao -------
-
-@api_view(['GET', 'POST'])
-def avaliacoes(request):
-    if request.method == 'GET':
-        avaliacoes = Avaliacao.objects.all()
-        serializer = AvaliacaoSerializer(avaliacoes, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = AvaliacaoSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['PUT', 'DELETE'])
-def avaliacao_detail(request, avaliacao_id):
-    try:
-        avaliacao = Avaliacao.objects.get(pk=avaliacao_id)
-    except Avaliacao.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'PUT':
-        serializer = AvaliacaoSerializer(avaliacao, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        avaliacao.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

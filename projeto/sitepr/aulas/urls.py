@@ -19,11 +19,13 @@ urlpatterns = [
     path('marcacoes/', views.marcacoes, name='marcacoes'),
     path('marcacoes/<int:pk>/', views.marcacao_detail, name='marcacao_detail'),
 
-    # Comentários
-    path('comentarios/', views.comentarios, name='comentarios'),
-    path('comentarios/<int:pk>/', views.comentario_detail, name='comentario_detail'),
 
-    # Avaliações
-    path('avaliacoes/', views.avaliacoes, name='avaliacoes'),
-    path('avaliacoes/<int:pk>/', views.avaliacao_detail, name='avaliacao_detail'),
+    # Comentários gerais (listar, criar)
+    path('comentarios/', views.comentarios, name='comentarios'),
+    
+    # Comentários + média para uma aula específica
+    path('aulas/<int:aula_id>/comentarios/', views.comentarios_e_media, name='comentarios_e_media'),
+
+    # Comentário específico (atualizar, deletar)
+    path('comentarios/<int:comentario_id>/', views.comentario_detail, name='comentario_detail'),
 ]

@@ -11,14 +11,13 @@ class Modalidade(models.Model):
         return self.nome
 
 
-# models.py
 class Aula(models.Model):
     modalidade = models.ForeignKey(Modalidade, on_delete=models.CASCADE)
     data = models.DateField()
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
     max_participantes = models.PositiveIntegerField()
-    participantes_atual = models.PositiveIntegerField(default=0)  # NOVO
+    participantes_atual = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.modalidade.nome} em {self.data} às {self.hora_inicio}"
@@ -27,6 +26,11 @@ class Aula(models.Model):
         agora = timezone.now().date()
         return self.data >= agora - datetime.timedelta(days=1)
 
+    def media_avaliacoes(self):
+        avaliacoes = self.comentarios.exclude(nota__isnull=True)
+        if avaliacoes.exists():
+            return round(sum(c.nota for c in avaliacoes) / avaliacoes.count(), 1)
+        return None
 
 
 class Marcacao(models.Model):
@@ -46,22 +50,16 @@ class Marcacao(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.aula} ({self.status})"
 
+
 class Comentario(models.Model):
-    aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
+    aula = models.ForeignKey(Aula, related_name='comentarios', on_delete=models.CASCADE)
     autor = models.ForeignKey(User, on_delete=models.CASCADE)
-    texto = models.TextField()
+    texto = models.TextField(blank=True)  # texto opcional
+    nota = models.PositiveSmallIntegerField()  # nota obrigatória, não aceita null nem blank
     criado_em = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"Comentário por {self.autor.username} em {self.aula}"
-
-
-class Avaliacao(models.Model):
-    aula = models.ForeignKey(Aula, on_delete=models.CASCADE)
-    atleta = models.ForeignKey(User, on_delete=models.CASCADE)
-    nota = models.IntegerField()
-    comentario = models.TextField(blank=True, null=True)
-    criado_em = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('aula', 'autor')  # 1 comentário/avaliação por usuário
 
     def __str__(self):
-        return f"Avaliação {self.nota}/5 por {self.atleta.username} em {self.aula}"
+        return f"{self.autor.username} - Aula {self.aula.id} - Nota: {self.nota}"

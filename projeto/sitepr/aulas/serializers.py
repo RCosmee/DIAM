@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Modalidade, Aula, Marcacao, Comentario, Avaliacao
+from .models import Modalidade, Aula, Marcacao, Comentario
 from django.contrib.auth.models import User
 
 
@@ -73,11 +73,13 @@ class MarcacaoSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['marcada_em']
 
-
 class ComentarioSerializer(serializers.ModelSerializer):
     autor = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
     autor_nome = serializers.StringRelatedField(source='autor', read_only=True)
+    nota = serializers.IntegerField(min_value=1, max_value=5) 
+    texto = serializers.CharField(allow_blank=True, required=False)
+    criado_em = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = Comentario
@@ -87,26 +89,7 @@ class ComentarioSerializer(serializers.ModelSerializer):
             'autor',
             'autor_nome',
             'texto',
-            'criado_em',
-        ]
-        read_only_fields = ['criado_em']
-
-
-class AvaliacaoSerializer(serializers.ModelSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    aula = serializers.PrimaryKeyRelatedField(queryset=Aula.objects.all())
-
-    user_nome = serializers.StringRelatedField(source='user', read_only=True)
-
-    class Meta:
-        model = Avaliacao
-        fields = [
-            'id',
-            'aula',
-            'user',
-            'user_nome',
             'nota',
-            'comentario',
             'criado_em',
         ]
         read_only_fields = ['criado_em']
