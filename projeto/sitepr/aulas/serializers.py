@@ -20,6 +20,7 @@ class AulaSerializer(serializers.ModelSerializer):
     data = serializers.DateField(format="%Y-%m-%d")
     hora_inicio = serializers.TimeField(format="%H:%M")
     hora_fim = serializers.TimeField(format="%H:%M")
+    participantes_atual = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Aula
@@ -31,6 +32,7 @@ class AulaSerializer(serializers.ModelSerializer):
             'hora_inicio',
             'hora_fim',
             'max_participantes',
+            'participantes_atual',
         ]
 
     def create(self, validated_data):

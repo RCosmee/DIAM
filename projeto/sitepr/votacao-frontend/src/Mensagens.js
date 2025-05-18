@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import Header from './Header';
@@ -26,6 +26,26 @@ export default function Mensagens() {
     return allUsers.find(user => user.id === id);
   };
 
+const handleChats = useCallback(() => {
+  if (userId !== null) {
+    axios.get(`${BASE_URL}/chats/`)
+      .then(response => {
+        const nuserChats = response.data.filter(chat =>
+          !chat.participants.includes(userId) && chat.avatar !== "" && chat.avatar !== null);
+        setNonChats(nuserChats);
+
+        const userChats = response.data.filter(chat =>
+          chat.participants.includes(userId)
+        );
+        setChats(userChats);
+        if (userChats.length > 0) {
+          setSelectedChat(userChats[0]);
+        }
+      })
+      .catch(err => console.error("Erro ao carregar chats:", err));
+  }
+}, [userId]); 
+
   useEffect(() => {
     axios.get(`http://localhost:8000/api/user/`, { withCredentials: true })
       .then(res => {
@@ -46,9 +66,10 @@ export default function Mensagens() {
 
   useEffect(() => {
     if (userId !== null) {
-          handleChats();
+      handleChats();
     }
-  }, [userId]);
+  }, [userId, handleChats]);
+
 
 
   useEffect(() => {
@@ -69,7 +90,7 @@ export default function Mensagens() {
     let alt = selectedChat.name || 'Usuário';
 
     if (selectedChat.avatar) {
-      src = `http://localhost:8000/media/imagens_grupo/${selectedChat.avatar}`;
+      src = `http://localhost:8000/media/imagens_perfil/${selectedChat.avatar}.png`;
     } else {
       const otherParticipantId = selectedChat.participants.find(id => id !== userId);
       const otherUser = allUsers.find(user => user.id === otherParticipantId);
@@ -96,25 +117,6 @@ export default function Mensagens() {
   const filteredChats3 = nonchats2
   .filter(user => user.nome.toLowerCase().includes(searchTerm2.toLowerCase()));
 
-  const handleChats = () => {
-    if (userId !== null) {
-      axios.get(`${BASE_URL}/chats/`)
-        .then(response => {
-          const nuserChats = response.data.filter(chat =>
-            !chat.participants.includes(userId) && chat.avatar!=="" && chat.avatar!==null);
-          setNonChats(nuserChats);
-
-          const userChats = response.data.filter(chat =>
-            chat.participants.includes(userId)
-          );
-          setChats(userChats);
-          if (userChats.length > 0) {
-            setSelectedChat(userChats[0]);
-          }
-        })
-        .catch(err => console.error("Erro ao carregar chats:", err));
-    }
-  };
   const handleUsersWithoutChat = () => {
     const usersWithPrivateChat = new Set();
 
@@ -266,7 +268,7 @@ export default function Mensagens() {
                 onClick={() => setSelectedChat(chat)}
               >
                 <img
-                  src={`http://localhost:8000/media/imagens_grupo/${chat.avatar}`}
+                  src={`http://localhost:8000/media/imagens_perfil/${chat.avatar}.png`}
                   alt={chat.name}
                   className="contact-avatar"
                   onError={(e) => {
@@ -489,7 +491,7 @@ export default function Mensagens() {
                 const otherUser = allUsers.find(user => user.id === otherParticipantId);
                 const displayName = chat.name || otherUser?.nome || "Usuário";
                 const avatarSrc = chat.avatar
-                  ? `http://localhost:8000/media/imagens_grupo/${chat.avatar}`
+                  ? `http://localhost:8000/media/imagens_perfil/${chat.avatar}.png`
                   : (otherUser?.imagem ? `http://localhost:8000${otherUser.imagem}` : 'http://localhost:8000/media/imagens_perfil/default.png');
 
                 const isChecked = selectedChats.includes(chat.pk);

@@ -125,8 +125,8 @@ const Marcacoes = () => {
   const alternarMarcacao = async (aulaId) => {
     const marcada = aulasMarcadas.find((m) => m.aulaId === aulaId);
 
-    if (marcada) {
-      try {
+    try {
+      if (marcada) {
         await axios.delete(`http://localhost:8000/api/marcacoes/${marcada.marcacaoId}/`, {
           withCredentials: true,
           headers: {
@@ -134,11 +134,7 @@ const Marcacoes = () => {
           },
         });
         setAulasMarcadas((prev) => prev.filter((m) => m.aulaId !== aulaId));
-      } catch (error) {
-        console.error('Erro ao desmarcar aula:', error);
-      }
-    } else {
-      try {
+      } else {
         const response = await axios.post(
           `http://localhost:8000/api/marcacoes/?idaula=${aulaId}`,
           {},
@@ -150,12 +146,16 @@ const Marcacoes = () => {
           }
         );
         setAulasMarcadas((prev) => [...prev, { aulaId: aulaId, marcacaoId: response.data.id }]);
-      } catch (error) {
-        console.error('Erro ao marcar aula:', error);
       }
-    }
 
-    setAulaSelecionada(null);
+      // Atualizar a lista de aulas disponíveis para refletir participantes_atual
+      const response = await axios.get('http://localhost:8000/api/aulas/', { withCredentials: true });
+      setAulasDisponiveis(response.data);
+
+      setAulaSelecionada(null);
+    } catch (error) {
+      console.error('Erro ao (des)marcar aula:', error);
+    }
   };
 
   const modalidadesUnicas = Array.from(new Set(aulasDisponiveis.map(a => a.modalidade?.nome).filter(Boolean))).sort((a, b) => a.localeCompare(b));
@@ -220,12 +220,19 @@ const Marcacoes = () => {
             aulasOrdenadas.map((aula) => (
               <button
                 key={aula.id}
-                className={`aula-botao ${aulasMarcadas.some(m => m.aulaId === aula.id) ? 'aula-marcada' : ''}`}
-                onClick={() => setAulaSelecionada(aula)}
+                className={`aula-botao ${aulasMarcadas.some(m => m.aulaId === aula.id) ? 'aula-marcada' : aula.participantes_atual >= aula.max_participantes ? 'aula-cheia' : ''}`}
+                onClick={() => {
+                  const marcada = aulasMarcadas.some(m => m.aulaId === aula.id);
+                  const cheia = aula.participantes_atual >= aula.max_participantes;
+                  if (!cheia || marcada) {
+                    setAulaSelecionada(aula);
+                  }
+                }}
               >
                 <strong>{aula.data}</strong><br />
                 {aula.hora_inicio} - {aula.hora_fim}<br />
-                {aula.modalidade?.nome}
+                {aula.modalidade?.nome}<br />
+                {aula.participantes_atual} / {aula.max_participantes} 👥
               </button>
             ))
           )}

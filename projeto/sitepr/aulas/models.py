@@ -11,13 +11,14 @@ class Modalidade(models.Model):
         return self.nome
 
 
+# models.py
 class Aula(models.Model):
     modalidade = models.ForeignKey(Modalidade, on_delete=models.CASCADE)
     data = models.DateField()
     hora_inicio = models.TimeField()
     hora_fim = models.TimeField()
     max_participantes = models.PositiveIntegerField()
-    
+    participantes_atual = models.PositiveIntegerField(default=0)  # NOVO
 
     def __str__(self):
         return f"{self.modalidade.nome} em {self.data} às {self.hora_inicio}"

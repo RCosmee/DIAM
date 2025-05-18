@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import './Marcacoes.css'; // ou MinhasMarcacoes.css se preferir separar
+import './Marcacoes.css'; // ou MinhasMarcacoes.css
 
 const MinhasMarcacoes = () => {
   const [aulasMarcadas, setAulasMarcadas] = useState([]);
@@ -32,10 +32,11 @@ const MinhasMarcacoes = () => {
           hora_fim: m.aula_detalhes.hora_fim,
           modalidade: m.aula_detalhes.modalidade.nome,
           descricao: m.aula_detalhes.modalidade.descricao,
-          status: m.status,  // Aqui, pegamos o status da marcação
+          participantes_atual: m.aula_detalhes.participantes_atual,
+          max_participantes: m.aula_detalhes.max_participantes,
         }));
 
-        // Ordenar por data e hora
+        // Ordenar por data/hora
         aulas.sort((a, b) => {
           const dataA = new Date(`${a.data}T${a.hora_inicio}`);
           const dataB = new Date(`${b.data}T${b.hora_inicio}`);
@@ -49,7 +50,6 @@ const MinhasMarcacoes = () => {
       });
   }, []);
 
-  // Função para desmarcar a aula
   const desmarcarAula = async (id) => {
     try {
       await axios.delete(`http://localhost:8000/api/marcacoes/${id}/`, {
@@ -75,18 +75,12 @@ const MinhasMarcacoes = () => {
           <p>Você ainda não marcou nenhuma aula.</p>
         ) : (
           aulasMarcadas.map((aula) => (
-            <div
-              className={`aula-card ${aula.status === 'cancelada' ? 'cancelada' : ''}`}  // Condição para adicionar a classe 'cancelada'
-              key={aula.id}
-            >
+            <div className="aula-card" key={aula.id}>
               <strong>{aula.modalidade}</strong>
               <p>{aula.data} - {aula.hora_inicio} às {aula.hora_fim}</p>
               <p>{aula.descricao}</p>
-
-              {/* Remover botão de desmarcar se estiver cancelada */}
-              {aula.status !== 'cancelada' && (
-                <button className="botao-desmarcar" onClick={() => desmarcarAula(aula.id)}>Desmarcar</button>
-              )}
+              <p>Participantes: {aula.participantes_atual} / {aula.max_participantes} 👥</p>
+              <button className="botao-desmarcar" onClick={() => desmarcarAula(aula.id)}>Desmarcar</button>
             </div>
           ))
         )}

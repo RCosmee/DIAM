@@ -123,17 +123,17 @@ def marcacoes(request):
         data_hora_aula = datetime.combine(aula.data, aula.hora_inicio)  # Combina data e hora da aula
         if data_hora_aula < datetime.now():
             return Response({'error': 'Não é possível marcar uma aula que já passou'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if aula.participantes_atual >= aula.max_participantes:
+            return Response({'error': 'A aula atingiu o número máximo de participantes'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Criar a nova marcação com status 'por_marcar' inicialmente
         marcacao = Marcacao(user=request.user, aula=aula, status='por_marcar')
-
         try:
-            # Salvar a marcação
             marcacao.save()
-            
-            # Após salvar, altere o status para 'marcada'
             marcacao.status = 'marcada'
-            marcacao.save()  # Salve novamente para garantir que o status seja atualizado corretamente
+            marcacao.save()
+            aula.participantes_atual += 1  # INCREMENTA
+            aula.save()
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -164,7 +164,11 @@ def marcacao_detail(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
+        aula = marcacao.aula
         marcacao.delete()
+        if aula.participantes_atual > 0:
+            aula.participantes_atual -= 1  # DECREMENTA
+            aula.save()
         return Response({'mensagem': 'Marcação removida.'}, status=status.HTTP_204_NO_CONTENT)
 
 # ------- Comentario -------
