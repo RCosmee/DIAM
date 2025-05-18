@@ -18,6 +18,8 @@ class Aula(models.Model):
     hora_fim = models.TimeField()
     max_participantes = models.PositiveIntegerField()
     participantes_atual = models.PositiveIntegerField(default=0)
+    pt = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)  # Campo PT (Personal Trainer)
+
 
     def __str__(self):
         return f"{self.modalidade.nome} em {self.data} às {self.hora_inicio}"

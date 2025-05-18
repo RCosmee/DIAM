@@ -51,9 +51,9 @@
   width: 90%;
   margin: 12px auto 0 auto;
   padding: 8px 0;
-  background-color: var(--primary-color, #007bff);
-  color: white;
-  border: none;
+  background-color: #f0f0f0;
+  color: rgb(0, 0, 0);
+  border: 1px solid #ccc;
   border-radius: 30px;
   font-size: 18px;
   font-weight: 600;
@@ -65,6 +65,75 @@
 }
 
 .btn-remover:hover {
-  background-color: #0056b3;
+  background-color: #d32f2f; /* vermelho forte */
+  color: white;
+  border-color: #b71c1c;
   transform: scale(1.04);
+}
+
+.aula-antiga {
+  background-color: #f8d7da; /* Cor de fundo vermelha clara */
+  color: #721c24; /* Cor do texto (vermelho mais escuro) */
+  border: 1px solid #f5c6cb; /* Borda de cor vermelha */
+}
+
+/* Estilos do modal */
+.modalii {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalii-conteudo {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 80%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btnii-fechar {
+  background-color: #ff4c4c;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
+}
+
+.comentariosii-container {
+  margin-top: 20px;
+}
+
+.comentarioii {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f8f8f8;
+  border-radius: 5px;
+}
+
+.comentarioii p {
+  margin: 5px 0;
+}
+
+.aula-botao .btnii-avaliar {
+  background-color: #fdf90a8c;
+  color: rgb(0, 0, 0);
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.aula-botao .btnii-avaliar:hover {
+  background-color: #f8fc1f;
 }

@@ -90,7 +90,17 @@
 .mensagem {
   margin-top: 10px;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 25px;
   text-align: center;
   color: #333;
 }
+
+.erro-mensagem {
+  margin-top: 10px;
+  text-align: center;
+  color: #dc3545; 
+  font-weight: bold;
+  font-size: 25px;
+}
+
+

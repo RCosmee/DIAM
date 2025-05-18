@@ -13,7 +13,6 @@ from .models import Modalidade, Aula, Marcacao, Comentario
 from .serializers import ModalidadeSerializer, AulaSerializer, MarcacaoSerializer, ComentarioSerializer
 from django.db.models import Avg
 
-
 # ------- Modalidade -------
 
 @api_view(['GET', 'POST'])
@@ -57,29 +56,50 @@ def modalidade_detail(request, modalidade_id):
 # ------- Aula -------
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def aulas(request):
     if request.method == 'GET':
+        # Recupera todas as aulas e serializa, incluindo o campo pt
         aulas = Aula.objects.all()
         serializer = AulaSerializer(aulas, many=True)
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = AulaSerializer(data=request.data)
+        # Usando o usuário logado diretamente
+        pt = request.user  # Obtém o usuário logado (caso autenticado)
+        
+        aula_data = request.data
+        aula_data['pt'] = pt.id  # Associa o ID do usuário ao campo PT da aula
+
+        # Agora você pode criar a aula com o PT já associado
+        serializer = AulaSerializer(data=aula_data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])  # Garante que o usuário esteja autenticado
 def aula_detail(request, pk):
     aula = get_object_or_404(Aula, pk=pk)
-    
+
+    # Verificar se o usuário logado é o PT que está associado à aula
+    if aula.pt != request.user:
+        return Response({"detail": "Não tens permissão para remover esta aula."}, status=status.HTTP_403_FORBIDDEN)
+
     if request.method == 'GET':
+        # Recupera uma aula específica e serializa, incluindo o campo pt
         serializer = AulaSerializer(aula)
         return Response(serializer.data)
     
     elif request.method == 'PUT':
+        # Verifica se o campo pt_id foi fornecido ao atualizar
+        pt_id = request.user  # O PT logado será o user atual
+        if pt_id:
+            pt = pt_id
+            request.data['pt'] = pt.id  # Atualiza o PT (Personal Trainer) na aula
+        
+        # Serializa os dados da aula para atualizar
         serializer = AulaSerializer(aula, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -87,9 +107,9 @@ def aula_detail(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     elif request.method == 'DELETE':
+        # Deleta a aula se for o PT logado
         aula.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 # ------- Marcacao -------
 
