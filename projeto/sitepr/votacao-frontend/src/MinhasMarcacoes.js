@@ -61,6 +61,7 @@ useEffect(() => {
       .then((res) => {
         const aulas = res.data.map((m) => ({
           id: m.aula_detalhes.id,
+          marcacaoId: m.id,  // <- este é o que deve ser usado para deletar!
           data: m.aula_detalhes.data,
           hora_inicio: m.aula_detalhes.hora_inicio,
           hora_fim: m.aula_detalhes.hora_fim,
@@ -81,17 +82,18 @@ useEffect(() => {
       });
   }, []);
 
-  const desmarcarAula = async (id) => {
-    try {
-      await axios.delete(`http://localhost:8000/api/marcacoes/${id}/`, {
-        withCredentials: true,
-        headers: { 'X-CSRFToken': getCookie('csrftoken') },
-      });
-      setAulasMarcadas((prev) => prev.filter((aula) => aula.id !== id));
-    } catch (error) {
-      console.error('Erro ao desmarcar aula:', error);
-    }
-  };
+const desmarcarAula = async (marcacaoId) => {
+  try {
+    await axios.delete(`http://localhost:8000/api/marcacoes/${marcacaoId}/`, {
+      withCredentials: true,
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    });
+    setAulasMarcadas((prev) => prev.filter((aula) => aula.marcacaoId !== marcacaoId));
+  } catch (error) {
+    console.error('Erro ao desmarcar aula:', error);
+  }
+};
+
 
   const abrirModalAvaliacao = async (aula) => {
     setAvaliandoAula(aula);
@@ -270,7 +272,7 @@ const renderStar = (starNumber, media) => {
         {aula.status !== 'cancelada' && (
           <button
             className="botao-desmarcar"
-            onClick={() => desmarcarAula(aula.id)}
+            onClick={() => desmarcarAula(aula.marcacaoId)}
           >
             Desmarcar
           </button>

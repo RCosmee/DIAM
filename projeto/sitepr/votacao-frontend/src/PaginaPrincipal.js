@@ -193,7 +193,7 @@ const PaginaPrincipal = () => {
             {aulasDoDiaSelecionado.map(aula => (
               <div key={aula.id} className="aula-modale-item">
                 <strong>{aula.aula_detalhes.modalidade.nome}</strong><br />
-                <span>{aula.aula_detalhes.participantes_atual} / {aula.aula_detalhes.participantes_max} 👥 </span><br />
+                <span>{aula.aula_detalhes.participantes_atual} / {aula.aula_detalhes.max_participantes} 👥 </span><br />
                 {aula.aula_detalhes.hora_inicio} - {aula.aula_detalhes.hora_fim}<br />
                 <button onClick={() => desmarcarAula(aula.id)}>Desmarcar</button>
               </div>
